@@ -2,7 +2,7 @@
   "id": "superpack_twist",
   "displayName": "SuperPack Twirl",
   "category": "glitch",
-  "order": 37393000010,
+  "order": 37393000001,
   "parameters": [
     {
       "identifier": "angle",
