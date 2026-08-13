@@ -1,0 +1,28 @@
+{
+  "id": "superpack_ringmod",
+  "displayName": "SuperPack Ring-Mod",
+  "category": "space",
+  "icon": "audio-waveform",
+  "order": 3739300001,
+  "backend": "juce",
+  "processor": "tremolo",
+  "prerollMs": 0,
+  "parameters": [
+    {
+      "identifier": "rate",
+      "displayName": "Rate",
+      "type": "float",
+      "minValue": 0.1,
+      "maxValue": 300,
+      "defaultValue": 20
+    },
+    {
+      "identifier": "depth",
+      "displayName": "Depth",
+      "type": "float",
+      "minValue": 0.0,
+      "maxValue": 1.0,
+      "defaultValue": 0.7
+    }
+  ]
+}
