@@ -3,7 +3,7 @@
   "displayName": "SuperPack Ring-Mod",
   "category": "space",
   "icon": "audio-waveform",
-  "order": 3739300001,
+  "order": 37393000010,
   "backend": "juce",
   "processor": "tremolo",
   "prerollMs": 0,
