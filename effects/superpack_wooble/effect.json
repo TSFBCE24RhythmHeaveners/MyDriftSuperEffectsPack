@@ -2,7 +2,7 @@
   "id": "superpack_wooble",
   "displayName": "SuperPack Wave Warp",
   "category": "funny",
-  "order": 3739300001,
+  "order": 3739300000,
   "parameters": [
     {
       "identifier": "amount",
