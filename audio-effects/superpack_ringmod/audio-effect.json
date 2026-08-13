@@ -1,7 +1,7 @@
 {
   "id": "superpack_ringmod",
   "displayName": "SuperPack Ring-Mod",
-  "category": "space",
+  "category": "voice",
   "icon": "audio-waveform",
   "order": 37393000010,
   "backend": "juce",
