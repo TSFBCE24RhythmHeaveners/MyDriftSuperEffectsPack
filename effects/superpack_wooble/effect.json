@@ -1,6 +1,6 @@
 {
   "id": "superpack_wooble",
-  "displayName": "SuperPack Wave Warp",
+  "displayName": "SuperPack Wooble",
   "category": "funny",
   "order": 3739300000,
   "parameters": [
@@ -9,8 +9,8 @@
       "displayName": "Amount",
       "type": "float",
       "minValue": 0,
-      "maxValue": 10,
-      "defaultValue": 0.35
+      "maxValue": 20,
+      "defaultValue": 0.2
     },
     {
       "identifier": "frequency",
@@ -18,7 +18,7 @@
       "type": "float",
       "minValue": 1,
       "maxValue": 20,
-      "defaultValue": 6
+      "defaultValue": 5
     },
     {
       "identifier": "speed",
@@ -26,7 +26,7 @@
       "type": "float",
       "minValue": 0,
       "maxValue": 100,
-      "defaultValue": 1
+      "defaultValue": 20
     },
     {
       "identifier": "axis",
