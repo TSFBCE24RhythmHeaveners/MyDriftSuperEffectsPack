@@ -1,7 +1,7 @@
 {
   "id": "superpack_wooble",
   "displayName": "SuperPack Wave Warp",
-  "category": "funny",
+  "category": "glitch",
   "order": 3739300000,
   "parameters": [
     {
@@ -9,7 +9,7 @@
       "displayName": "Amount",
       "type": "float",
       "minValue": 0,
-      "maxValue": 20,
+      "maxValue": 1,
       "defaultValue": 0.2
     },
     {
@@ -25,8 +25,8 @@
       "displayName": "Speed",
       "type": "float",
       "minValue": 0,
-      "maxValue": 100,
-      "defaultValue": 20
+      "maxValue": 50,
+      "defaultValue": 10
     },
     {
       "identifier": "axis",
