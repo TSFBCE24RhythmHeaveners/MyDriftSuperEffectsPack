@@ -3,7 +3,7 @@
   "displayName": "SuperPack Pitch Shift",
   "category": "voice",
   "icon": "activity",
-  "order": 3739300000,
+  "order": 37393000000,
   "backend": "juce",
   "processor": "pitch",
   "prerollMs": 300,

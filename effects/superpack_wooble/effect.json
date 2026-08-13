@@ -2,7 +2,7 @@
   "id": "superpack_wooble",
   "displayName": "SuperPack Wave Warp",
   "category": "glitch",
-  "order": 3739300000,
+  "order": 37393000000,
   "parameters": [
     {
       "identifier": "amount",
