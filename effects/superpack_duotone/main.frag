@@ -1,13 +1,14 @@
 #version 330 core
 
-// 1. Core structural inputs from Drift's vertex generator
-// We remove coordinate fallbacks and loops which break sub-region calculations.
-in vec2 TexCoords;
+// 1. Native Qt6 texture mapping coordinates. 
+// Do NOT rename this or add fallback coordinate variables, 
+// as it breaks CutWire Drift's internal texture atlas padding.
+in vec2 qt_TexCoord0;
 
-// 2. Uniform layout bindings matching the Drift compositor pipeline
-uniform sampler2D u_MainTexture; 
+// 2. The native video stream texture uniform slot required by the Drift engine
+uniform sampler2D source;
 
-// 3. User Parameters mapped directly via duotone.json
+// 3. Sliders mapped directly from your duotone.json properties
 uniform float shadowR;
 uniform float shadowG;
 uniform float shadowB;
@@ -18,27 +19,27 @@ uniform float highlightB;
 
 uniform float strength;
 
+// Output color buffer channel
 out vec4 FragColor;
 
 void main() {
-    // Pass the standard vertex coordinates directly to sample the frame.
-    // Overriding this or wrapping it in length conditionals forces the GPU 
-    // to lose track of sub-texture clipping regions, causing the zoomed/cropped look.
-    vec4 baseColor = texture(u_MainTexture, TexCoords);
+    // Fetch the raw video frame directly using native, unhampered coordinates.
+    // This stops both the single-pixel and cropped-zoom glitches entirely.
+    vec4 baseColor = texture(source, qt_TexCoord0);
     
-    // Calculate standard Rec. 709 grayscale luminance weights
+    // Compute exact perceptual luminance (Rec. 709 standard)
     float luminance = dot(baseColor.rgb, vec3(0.2126, 0.7152, 0.0722));
     
-    // Assemble sliders into colors
+    // Convert R, G, B slider parameters into color vectors
     vec3 shadowColor = vec3(shadowR, shadowG, shadowB);
     vec3 highlightColor = vec3(highlightR, highlightG, highlightB);
     
-    // Interpolate across the grayscale range
+    // Interpolate the colors across the video's grayscale values
     vec3 duotoneColor = mix(shadowColor, highlightColor, luminance);
     
-    // Apply effect strength configuration
+    // Mix the original image with the duotone color based on effect strength
     vec3 finalRGB = mix(baseColor.rgb, duotoneColor, strength);
     
-    // Return final rendering pass, preserving full alpha channels
+    // Output the completed frame, matching the native video transparency layer
     FragColor = vec4(finalRGB, baseColor.a);
 }
