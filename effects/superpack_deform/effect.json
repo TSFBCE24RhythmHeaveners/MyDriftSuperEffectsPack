@@ -43,6 +43,22 @@
       "defaultValue": 0.0,
       "minValue": -360.0,
       "maxValue": 360.0
+    },
+    {
+      "identifier": "u_flip_h",
+      "displayName": "Horizontal Flip",
+      "type": "bool",
+      "defaultValue": 0.0,
+      "minValue": 0,
+      "maxValue": 1
+    },
+    {
+      "identifier": "u_flip_v",
+      "displayName": "Vertical Flip",
+      "type": "bool",
+      "defaultValue": 0.0,
+      "minValue": 0,
+      "maxValue": 1
     }
   ],
   "backend": "gpu",
