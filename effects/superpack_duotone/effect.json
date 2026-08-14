@@ -1,0 +1,64 @@
+{
+  "name": "SuperPack Duotone",
+  "id": "superpack_duotone",
+  "category": "color",
+  "parameters": [
+    {
+      "id": "shadowR",
+      "name": "Shadow R",
+      "type": "float",
+      "min": 0.0,
+      "max": 1.0,
+      "default": 0.1
+    },
+    {
+      "id": "shadowG",
+      "name": "Shadow G",
+      "type": "float",
+      "min": 0.0,
+      "max": 1.0,
+      "default": 0.2
+    },
+    {
+      "id": "shadowB",
+      "name": "Shadow B",
+      "type": "float",
+      "min": 0.0,
+      "max": 1.0,
+      "default": 0.2
+    },
+    {
+      "id": "highlightR",
+      "name": "Highlight R",
+      "type": "float",
+      "min": 0.0,
+      "max": 1.0,
+      "default": 0.95
+    },
+    {
+      "id": "highlightG",
+      "name": "Highlight G",
+      "type": "float",
+      "min": 0.0,
+      "max": 1.0,
+      "default": 0.8
+    },
+    {
+      "id": "highlightB",
+      "name": "Highlight B",
+      "type": "float",
+      "min": 0.0,
+      "max": 1.0,
+      "default": 0.5
+    },
+    {
+      "id": "strength",
+      "name": "Strength",
+      "type": "float",
+      "min": 0.0,
+      "max": 1.0,
+      "default": 1.0
+    }
+  ],
+  "fragmentShader": "main.frag"
+}
