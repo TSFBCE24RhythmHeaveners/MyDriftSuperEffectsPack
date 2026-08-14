@@ -6,7 +6,7 @@
   "parameters": [
     {
       "identifier": "shadowR",
-      "displayName": "Red Brightness",
+      "displayName": "SHadow Red",
       "type": "float",
       "defaultValue": 1.0,
       "minValue": 0.0,
