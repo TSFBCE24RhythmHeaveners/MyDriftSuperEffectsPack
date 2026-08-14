@@ -4,7 +4,7 @@ in vec2 TexCoords;
 out vec4 FragColor;
 
 // Video/Picture sampler input
-uniform sampler2D u_MainTexture;
+uniform sampler2D u_currentTexture;
 
 // Parameters from JSON configuration
 uniform float u_stretch_x;
