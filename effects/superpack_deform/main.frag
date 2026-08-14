@@ -3,58 +3,66 @@
 in vec2 TexCoords;
 out vec4 FragColor;
 
-// Video sampler input
+// Video/Picture sampler input
 uniform sampler2D u_base_video; 
 
-// Parameters fed by our JSON setup
+// Parameters from JSON configuration
 uniform float u_stretch_x;
 uniform float u_stretch_y;
 uniform float u_skew_x;
 uniform float u_skew_y;
-uniform float u_rotation; // Degrees
+uniform float u_rotation; // In Degrees
 
 void main()
 {
-    // 1. Shift origin to the center of the video frame (0.5, 0.5)
+    // 1. Shift coordinate origin to center (0.5, 0.5)
     vec2 uv = TexCoords - vec2(0.5);
 
-    // 2. Convert rotation to Radians
+    // 2. CRITICAL PROTECTION: Prevent division-by-zero or near-zero scaling matrices
+    // If Stretch parameters hit exactly 0.0, it collapses the image into a single oversized pixel.
+    float safe_stretch_x = (abs(u_stretch_x) < 0.001) ? 0.001 : u_stretch_x;
+    float safe_stretch_y = (abs(u_stretch_y) < 0.001) ? 0.001 : u_stretch_y;
+
+    // 3. Setup Trigonometry values for rotation
     float rad = radians(u_rotation);
     float cosR = cos(rad);
     float sinR = sin(rad);
 
-    // 3. Create Inverse Math Transformation Matrices
-    // Handled in reverse order to cleanly map the target canvas to the source texture
-    
+    // 4. Construct Transformation Matrices
+    // Using Inverse Mapping (Dividing instead of multiplying) 
+    // This maps the output canvas back to the source texture correctly.
+    mat2 scaleMat = mat2(
+        1.0 / safe_stretch_x, 0.0,
+        0.0,                  1.0 / safe_stretch_y
+    );
+
+    // Skew Matrix protection (prevents infinite shear collapses)
+    mat2 skewMat = mat2(
+        1.0,      -u_skew_x,
+        -u_skew_y, 1.0
+    );
+
     // Rotation Matrix
     mat2 rotMat = mat2(
-        cosR, -sinR,
-        sinR,  cosR
+        cosR,  sinR,
+       -sinR,  cosR
     );
 
-    // Skew Matrix 
-    mat2 skewMat = mat2(
-        1.0,      u_skew_x,
-        u_skew_y, 1.0
-    );
+    // 5. Apply the operations sequentially to the centered vector
+    // Scale -> Skew -> Rotate order prevents recursive mathematical distortion
+    uv = scaleMat * skewMat * rotMat * uv;
 
-    // Stretch Matrix (Inverse mapping means dividing to stretch outwards)
-    mat2 scaleMat = mat2(
-        1.0 / u_stretch_x, 0.0,
-        0.0,               1.0 / u_stretch_y
-    );
-
-    // 4. Combine operations and translate back to normal space
-    uv = rotMat * skewMat * scaleMat * uv;
+    // 6. Return origin to standard bottom-left layout
     uv += vec2(0.5);
 
-    // 5. CRITICAL FIX: Prevent the video from smearing into a solid flat color
-    // If transformed coordinates roll past the screen boundary, do not clamp/stretch.
+    // 7. CRITICAL BLOCK: Edge Out-Of-Bounds Handling
+    // Instead of stretching the boundary pixel forever across the screen,
+    // this instantly cuts off the drawing matrix outside the 0.0 - 1.0 UV limits.
     if (uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0) {
-        // Discards empty canvas space or defaults to an empty transparent alpha layer
-        discard; 
+        // Clear transparent background outside the transformed bounds
+        FragColor = vec4(0.0, 0.0, 0.0, 0.0); 
     } else {
-        // Render the safe, undistorted base pixel colors directly
+        // Clean, proportional texture lookup
         FragColor = texture(u_base_video, uv);
     }
 }
