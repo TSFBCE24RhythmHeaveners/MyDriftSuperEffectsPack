@@ -1,0 +1,48 @@
+{
+  "id": "superpack_deform",
+  "displayName": "Deform",
+  "order": 37393000005,
+  "category": "glitch",
+  "parameters": [
+    {
+      "displayName": "Stretch X",
+      "identifier": "u_stretch_x",
+      "type": "float",
+      "defaultValue": 1.0,
+      "minValue": 0.1,
+      "maxValue": 5.0
+    },
+    {
+      "displayName": "Stretch Y",
+      "identifier": "u_stretch_y",
+      "type": "float",
+      "defaultValue": 1.0,
+      "minValue": 0.1,
+      "maxValue": 5.0
+    },
+    {
+      "displayName": "Skew X",
+      "identifier": "u_skew_x",
+      "type": "float",
+      "defaultValue": 0.0,
+      "minValue": -2.0,
+      "maxValue": 2.0
+    },
+    {
+      "displayName": "Skew Y",
+      "identifier": "u_skew_y",
+      "type": "float",
+      "defaultValue": 0.0,
+      "minValue": -2.0,
+      "maxValue": 2.0
+    },
+    {
+      "displayName": "Rotation (Degrees)",
+      "identifier": "u_rotation",
+      "type": "float",
+      "defaultValue": 0.0,
+      "minValue": -360.0,
+      "maxValue": 360.0
+    }
+  ]
+}
