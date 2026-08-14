@@ -6,7 +6,6 @@ in vec2 TexCoords;
 in vec2 qt_TexCoord0;
 
 // 2. The Video Frame Texture input
-uniform sampler2D source;
 uniform sampler2D u_MainTexture;
 
 // 3. User Parameters from JSON
