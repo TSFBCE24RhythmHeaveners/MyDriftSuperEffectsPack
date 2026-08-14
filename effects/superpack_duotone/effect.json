@@ -5,60 +5,32 @@
   "order": 37393000004,
   "parameters": [
     {
-      "identifier": "shadowR",
-      "displayName": "Shadow Red",
-      "type": "float",
-      "defaultValue": 1.0,
-      "minValue": 0.0,
-      "maxValue": 1.0
-    },
-    {
-      "identifier": "shadowG",
-      "displayName": "Shadow Green",
-      "type": "float",
-      "minValue": 0.0,
-      "maxValue": 1.0,
-      "defaultValue": 0.2
-    },
-    {
-      "identifier": "shadowB",
-      "displayName": "Shadow Blue",
-      "type": "float",
-      "minValue": 0.0,
-      "maxValue": 1.0,
-      "defaultValue": 0.2
-    },
-    {
-      "identifier": "highlightR",
-      "displayName": "Highlight Red",
-      "type": "float",
-      "minValue": 0.0,
-      "maxValue": 1.0,
-      "defaultValue": 0.95
-    },
-    {
-      "identifier": "highlightGreen",
-      "displayName": "Highlight G",
-      "type": "float",
-      "minValue": 0.0,
-      "maxValue": 1.0,
-      "defaultValue": 0.8
-    },
-    {
-      "identifier": "highlightB",
-      "displayName": "Highlight Blue",
-      "type": "float",
-      "minValue": 0.0,
-      "maxValue": 1.0,
-      "defaultValue": 0.5
-    },
-    {
       "identifier": "strength",
       "displayName": "Strength",
       "type": "float",
-      "minValue": 0.0,
-      "maxValue": 1.0,
-      "defaultValue": 1.0
+      "minValue": 0,
+      "maxValue": 1,
+      "defaultValue": 0.8
+    },
+    {
+      "identifier": "shadowColor",
+      "displayName": "Shadow",
+      "type": "color",
+      "defaultValue": "#0a1628"
+    },
+    {
+      "identifier": "highlightColor",
+      "displayName": "Highlight",
+      "type": "color",
+      "defaultValue": "#ff6b35"
+    },
+    {
+      "identifier": "contrast",
+      "displayName": "Contrast",
+      "type": "float",
+      "minValue": 0,
+      "maxValue": 1,
+      "defaultValue": 0.5
     }
   ],
   "backend": "gpu",
