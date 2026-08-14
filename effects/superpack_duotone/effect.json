@@ -5,60 +5,60 @@
   "order": 37393000004,
   "parameters": [
     {
-      "id": "shadowR",
-      "name": "Shadow Red",
+      "identifier": "shadowR",
+      "displayName": "Red Brightness",
       "type": "float",
-      "min": 0.0,
-      "max": 1.0,
-      "default": 0.1
+      "defaultValue": 1.0,
+      "minValue": 0.0,
+      "maxValue": 1.0
     },
     {
-      "id": "shadowG",
-      "name": "Shadow Green",
+      "identifier": "shadowG",
+      "displayName": "Shadow Green",
       "type": "float",
-      "min": 0.0,
-      "max": 1.0,
-      "default": 0.2
+      "minValue": 0.0,
+      "maxValue": 1.0,
+      "defaultValue": 0.2
     },
     {
-      "id": "shadowB",
-      "name": "Shadow Blue",
+      "identifier": "shadowB",
+      "displayName": "Shadow Blue",
       "type": "float",
-      "min": 0.0,
-      "max": 1.0,
-      "default": 0.2
+      "minValue": 0.0,
+      "maxValue": 1.0,
+      "defaultValue": 0.2
     },
     {
-      "id": "highlightR",
-      "name": "Highlight Red",
+      "identifier": "highlightR",
+      "displayName": "Highlight Red",
       "type": "float",
-      "min": 0.0,
-      "max": 1.0,
-      "default": 0.95
+      "minValue": 0.0,
+      "maxValue": 1.0,
+      "defaultValue": 0.95
     },
     {
-      "id": "highlightGreen",
-      "name": "Highlight G",
+      "identifier": "highlightGreen",
+      "displayName": "Highlight G",
       "type": "float",
-      "min": 0.0,
-      "max": 1.0,
-      "default": 0.8
+      "minValue": 0.0,
+      "maxValue": 1.0,
+      "defaultValue": 0.8
     },
     {
-      "id": "highlightB",
-      "name": "Highlight Blue",
+      "identifier": "highlightB",
+      "displayName": "Highlight Blue",
       "type": "float",
-      "min": 0.0,
-      "max": 1.0,
-      "default": 0.5
+      "minValue": 0.0,
+      "maxValue": 1.0,
+      "defaultValue": 0.5
     },
     {
-      "id": "strength",
-      "name": "Strength",
+      "identifier": "strength",
+      "displayName": "Strength",
       "type": "float",
-      "min": 0.0,
-      "max": 1.0,
-      "default": 1.0
+      "minValue": 0.0,
+      "maxValue": 1.0,
+      "defaultValue": 1.0
     }
   ],
   "backend": "gpu",
