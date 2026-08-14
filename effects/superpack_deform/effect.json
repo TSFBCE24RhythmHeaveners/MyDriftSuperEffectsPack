@@ -1,6 +1,6 @@
 {
   "id": "superpack_deform",
-  "displayName": "Deform",
+  "displayName": "SuperPack Deform",
   "order": 37393000005,
   "category": "glitch",
   "parameters": [
@@ -9,7 +9,7 @@
       "identifier": "u_stretch_x",
       "type": "float",
       "defaultValue": 1.0,
-      "minValue": 0.1,
+      "minValue": 0.05,
       "maxValue": 5.0
     },
     {
@@ -17,7 +17,7 @@
       "identifier": "u_stretch_y",
       "type": "float",
       "defaultValue": 1.0,
-      "minValue": 0.1,
+      "minValue": 0.05,
       "maxValue": 5.0
     },
     {
