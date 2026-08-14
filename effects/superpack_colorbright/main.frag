@@ -1,49 +1,15 @@
 #version 330 core
-
-// Texture coordinates passed from Drift's vertex engine
-in vec2 TexCoords;
-
-// Uniform variables mapped from the JSON parameters
-uniform sampler2D u_MainTexture; // Primary texture slot mapping
-
-// Uniform parameters from JSON
-uniform float shadowR;
-uniform float shadowG;
-uniform float shadowB;
-
-uniform float highlightR;
-uniform float highlightG;
-uniform float highlightB;
-
-uniform float strength;
-
-// Output pixel color
-out vec4 FragColor;
-
+in vec2 v_texCoord; out vec4 fragColor;
+uniform sampler2D u_currentTexture;
+uniform float slopeR; uniform float slopeG; uniform float slopeB;
+uniform float offsetR; uniform float offsetG; uniform float offsetB;
+uniform float powerR; uniform float powerG; uniform float powerB;
+uniform float saturation;
 void main() {
-    // 1. Safe sampling of the original video frame
-    vec4 baseColor = texture(u_MainTexture, TexCoords);
-    
-    // 2. Safeguard: If strength is 0, immediately bypass calculations 
-    // to prevent any zero-value glitches or solid color overrides.
-    if (strength <= 0.0) {
-        FragColor = baseColor;
-        return;
-    }
-    
-    // 3. Calculate grayscale luminance using standard digital video weights
-    float luminance = dot(baseColor.rgb, vec3(0.2126, 0.7152, 0.0722));
-    
-    // 4. Assemble parameters into vec3 color structures
-    vec3 shadowColor = vec3(shadowR, shadowG, shadowB);
-    vec3 highlightColor = vec3(highlightR, highlightG, highlightB);
-    
-    // 5. Create the pure duotone color mapping
-    vec3 duotoneColor = mix(shadowColor, highlightColor, luminance);
-    
-    // 6. Interpolate between original and duotone based on the strength slider
-    vec3 finalRGB = mix(baseColor.rgb, duotoneColor, strength);
-    
-    // 7. Output final color, strictly preserving original alpha channel transparency
-    FragColor = vec4(finalRGB, baseColor.a);
+    vec4 c = texture(u_currentTexture, v_texCoord);
+    vec3 x = c.rgb * vec3(slopeR, slopeG, slopeB) + vec3(offsetR, offsetG, offsetB);
+    x = pow(max(x, vec3(0.0)), vec3(powerR, powerG, powerB));
+    float luma = dot(x, vec3(0.2126, 0.7152, 0.0722));
+    x = mix(vec3(luma), x, saturation);
+    fragColor = vec4(clamp(x, 0.0, 1.0), c.a);
 }
