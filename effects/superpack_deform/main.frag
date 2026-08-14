@@ -1,86 +1,68 @@
-#version 330 core
+// DO NOT ADD A #VERSION TAG HERE. Qt 6's qsb compiler injects it automatically.
 
-in vec2 TexCoords;
-out vec4 FragColor;
+// 1. Declare the input texture coordinates passed from Qt's vertex shader
+layout(location = 0) in vec2 qt_TexCoord0;
 
-// Video/Picture sampler input
-uniform sampler2D u_base_video; 
+// 2. Declare the final pixel output location
+layout(location = 0) out vec4 fragColor;
 
-// Input resolutions to fix aspect ratio cropping bugs
-uniform vec2 u_resolution; // Width and Height of the viewport/canvas
+// 3. MANDATORY QT 6 UNIFORM BLOCK (std140 binding layout)
+// Qt 6 groups all custom properties and built-ins inside a unified struct container.
+layout(std140, binding = 0) uniform buf {
+    mat4 qt_Matrix;
+    float qt_Opacity;
+    
+    // Your UI parameters from the CutWire Drift JSON mapping
+    float u_stretch_x;
+    float u_stretch_y;
+    float u_skew_x;
+    float u_skew_y;
+    float u_rotation;
+    
+    // Booleans inside Qt 6 uniform blocks must be treated as floats (0.0 = false, 1.0 = true)
+    float u_flip_h;
+    float u_flip_v;
+};
 
-// Parameters from JSON configuration
-uniform float u_stretch_x;
-uniform float u_stretch_y;
-uniform float u_skew_x;
-uniform float u_skew_y;
-uniform float u_rotation; // In Degrees
-
-// Flip Toggles
-uniform bool u_flip_h;
-uniform bool u_flip_v;
+// Define the source texture sampler linked from your QML layer
+layout(binding = 1) uniform sampler2D u_base_video;
 
 void main()
 {
-    // 1. Calculate Aspect Ratio to prevent automatic squishing/cropping on wide screens
-    float aspect = u_resolution.x / u_resolution.y;
+    // 4. Shift coordinate origin to center (0.5, 0.5)
+    vec2 uv = qt_TexCoord0 - vec2(0.5);
 
-    // 2. Shift coordinate origin to center (0.5, 0.5)
-    vec2 uv = TexCoords - vec2(0.5);
-    
-    // Adjust X coordinate by aspect ratio so rotation does not warp or crop the edges
-    uv.x *= aspect;
+    // 5. APPLY FLIPS: Safely evaluates float values acting as booleans (value > 0.5)
+    if (u_flip_h > 0.5) uv.x = -uv.x;
+    if (u_flip_v > 0.5) uv.y = -uv.y;
 
-    // 3. APPLY FLIPS: Safely mirrored across the adjusted center point
-    if (u_flip_h) uv.x = -uv.x;
-    if (u_flip_v) uv.y = -uv.y;
+    // 6. ZERO PROTECTION: Eliminates the giant blown-up pixel bug if values are 0
+    float sX = (u_stretch_x == 0.0) ? 1.0 : u_stretch_x;
+    float sY = (u_stretch_y == 0.0) ? 1.0 : u_stretch_y;
 
-    // 4. CRITICAL PROTECTION: Hard-clamp parameters away from exactly 0.0
-    // If stretch is 0, the math collapses entirely into a single massive pixel block.
-    // We force a minimum 0.001 size threshold to keep the matrix alive.
-    float sX = (abs(u_stretch_x) < 0.001) ? 0.001 : u_stretch_x;
-    float sY = (abs(u_stretch_y) < 0.001) ? 0.001 : u_stretch_y;
+    // 7. MANUAL SKEW & SCALE (Prevents matrix flattening collapses)
+    vec2 transformed_uv;
+    transformed_uv.x = (uv.x + (uv.y * u_skew_x)) / sX;
+    transformed_uv.y = (uv.y + (uv.x * u_skew_y)) / sY;
 
-    // 5. Setup Trigonometry values for rotation
+    // 8. MANUAL ROTATION (Trigonometric separation)
     float rad = radians(u_rotation);
     float cosR = cos(rad);
     float sinR = sin(rad);
 
-    // 6. Construct Clean Inverse Transformation Matrices
-    // Dividing maps canvas pixels back to the texture source without zooming bugs.
-    mat2 scaleMat = mat2(
-        1.0 / sX, 0.0,
-        0.0,      1.0 / sY
-    );
+    vec2 final_uv;
+    final_uv.x = transformed_uv.x * cosR - transformed_uv.y * sinR;
+    final_uv.y = transformed_uv.x * sinR + transformed_uv.y * cosR;
 
-    // Skew Matrix with cross-axis isolation to prevent edge cropping collapses
-    mat2 skewMat = mat2(
-        1.0,       -u_skew_x,
-        -u_skew_y,  1.0
-    );
+    // 9. Return coordinate framework to standard layout
+    final_uv += vec2(0.5);
 
-    // Rotation Matrix
-    mat2 rotMat = mat2(
-        cosR,  sinR,
-       -sinR,  cosR
-    );
-
-    // 7. Calculate transformed coordinates sequentially
-    uv = scaleMat * skewMat * rotMat * uv;
-
-    // Undo the aspect ratio normalization before texture sampling
-    uv.x /= aspect;
-
-    // 8. Return coordinate origin to standard layout
-    uv += vec2(0.5);
-
-    // 9. CRITICAL EDGE CHECK: Prevents the edge pixels from smearing into solid color stripes
-    // If the transformation calculation pushes coordinates outside the 0.0 - 1.0 texture zone,
-    // we bypass texture sampling completely and draw clean transparency.
-    if (uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0) {
-        FragColor = vec4(0.0, 0.0, 0.0, 0.0); 
+    // 10. ANTI-CROP & ANTI-STRETCH BOUNDARY GATE
+    // If transformations push coordinates out of visual bounds, output pure transparency
+    if (final_uv.x < 0.0 || final_uv.x > 1.0 || final_uv.y < 0.0 || final_uv.y > 1.0) {
+        fragColor = vec4(0.0, 0.0, 0.0, 0.0); 
     } else {
-        // High fidelity, uncropped, non-pixelated sample
-        FragColor = texture(u_base_video, uv);
+        // Sample texture and respect Qt's native parent layer opacity control
+        fragColor = texture(u_base_video, final_uv) * qt_Opacity;
     }
 }
