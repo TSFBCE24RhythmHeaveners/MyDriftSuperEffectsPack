@@ -2,10 +2,11 @@
   "name": "SuperPack Duotone",
   "id": "superpack_duotone",
   "category": "color",
+  "order": 37393000004,
   "parameters": [
     {
       "id": "shadowR",
-      "name": "Shadow R",
+      "name": "Shadow Red",
       "type": "float",
       "min": 0.0,
       "max": 1.0,
@@ -13,7 +14,7 @@
     },
     {
       "id": "shadowG",
-      "name": "Shadow G",
+      "name": "Shadow Green",
       "type": "float",
       "min": 0.0,
       "max": 1.0,
@@ -21,7 +22,7 @@
     },
     {
       "id": "shadowB",
-      "name": "Shadow B",
+      "name": "Shadow Blue",
       "type": "float",
       "min": 0.0,
       "max": 1.0,
@@ -29,14 +30,14 @@
     },
     {
       "id": "highlightR",
-      "name": "Highlight R",
+      "name": "Highlight Red",
       "type": "float",
       "min": 0.0,
       "max": 1.0,
       "default": 0.95
     },
     {
-      "id": "highlightG",
+      "id": "highlightGreen",
       "name": "Highlight G",
       "type": "float",
       "min": 0.0,
@@ -45,7 +46,7 @@
     },
     {
       "id": "highlightB",
-      "name": "Highlight B",
+      "name": "Highlight Blue",
       "type": "float",
       "min": 0.0,
       "max": 1.0,
@@ -60,5 +61,22 @@
       "default": 1.0
     }
   ],
-  "fragmentShader": "main.frag"
+  "backend": "gpu",
+  "pipeline": {
+    "intermediateBuffers": [],
+    "passes": [
+      {
+        "passIndex": 0,
+        "fragmentShader": "main.frag",
+        "inputs": [
+          {
+            "type": "source_texture"
+          }
+        ],
+        "output": {
+          "type": "canvas"
+        }
+      }
+    ]
+  }
 }
