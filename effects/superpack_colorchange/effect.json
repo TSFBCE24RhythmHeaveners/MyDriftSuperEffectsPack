@@ -1,6 +1,6 @@
 {
-  "id": "superpack_colorchange",
-  "displayName": "SuperPack Colour Changer",
+  "id": "superpack_colorbalance",
+  "displayName": "SuperPack Colour Balance",
   "category": "color",
   "order": 37393000002,
   "parameters": [
