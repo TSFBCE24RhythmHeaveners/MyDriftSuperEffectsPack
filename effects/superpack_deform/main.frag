@@ -1,86 +1,74 @@
-// NO #VERSION HEADER. The Qt 6 qsb compiler injects this automatically.
+#version 330 core
 
-layout(location = 0) in vec2 qt_TexCoord0;
-layout(location = 0) out vec4 fragColor;
+in vec2 v_texCoord; // Injected uniform or pass-through texture coordinates from Drift vertex stage
+out vec4 FragColor;
 
-// FIXED QT 6 UNIFORM BLOCK (Keeps your exact original parameter names)
-layout(std140, binding = 0) uniform buf {
-    // Occupies Bytes 0 to 63
-    mat4 qt_Matrix;
+// CutWire Drift global textures and dimensions
+uniform sampler2D u_inputTexture; 
+uniform vec2 u_resolution; 
+
+// Sliders and toggles parsed directly from deform.json
+uniform float u_zoom;
+uniform float u_stretch_x;
+uniform float u_stretch_y;
+uniform float u_rotate;
+uniform float u_skew_x;
+uniform float u_skew_y;
+uniform bool u_flip_h;
+uniform bool u_flip_v;
+uniform bool u_edge_wrap;
+
+void main() {
+    // 1. Normalize aspect ratio to correct skewed proportions during rotations
+    float aspect = u_resolution.x / u_resolution.y;
     
-    // Occupies Bytes 64 to 79 (4 bytes for float + 12 bytes padding)
-    float qt_Opacity;
-    float _pad0[3]; 
-    
-    // Occupies Bytes 80 to 95
-    float u_stretch_x;
-    float _pad1[3];
-    
-    // Occupies Bytes 96 to 111
-    float u_stretch_y;
-    float _pad2[3];
-    
-    // Occupies Bytes 112 to 127
-    float u_skew_x;
-    float _pad3[3];
-    
-    // Occupies Bytes 128 to 143
-    float u_skew_y;
-    float _pad4[3];
-    
-    // Occupies Bytes 144 to 159
-    float u_rotation;
-    float _pad5[3];
-    
-    // Occupies Bytes 160 to 175 (Booleans must be passed as floats: 0.0 or 1.0)
-    float u_flip_h;
-    float _pad6[3];
-    
-    // Occupies Bytes 176 to 191
-    float u_flip_v;
-    float _pad7[3];
-};
+    // 2. Center coordinates around (0.0, 0.0) to prevent the "zoomed-in base image bug"
+    vec2 uv = v_texCoord - vec2(0.5);
 
-// Texture sampler safely bound to pipeline slot 1
-layout(binding = 1) uniform sampler2D u_base_video;
+    // 3. Apply horizontal and vertical flip operations
+    if (u_flip_h) uv.x *= -1.0;
+    if (u_flip_v) uv.y *= -1.0;
 
-void main()
-{
-    // 1. Shift texture coordinate origin to dead center
-    vec2 uv = qt_TexCoord0 - vec2(0.5);
+    // 4. Adjust for canvas aspect ratio before rotation or skewing
+    uv.x *= aspect;
 
-    // 2. APPLY FLIPS: Checks if the float acting as a boolean toggle is enabled (> 0.5)
-    if (u_flip_h > 0.5) uv.x = -uv.x;
-    if (u_flip_v > 0.5) uv.y = -uv.y;
+    // 5. Build and process the Skew transform matrix
+    uv = mat2(
+        1.0,       u_skew_x,
+        u_skew_y,  1.0
+    ) * uv;
 
-    // 3. ZERO PROTECTION: If values are uninitialized or slider is at zero, default to 1.0 scale
-    // This completely prevents the "oversized pixel" artifact.
-    float sX = (u_stretch_x == 0.0) ? 1.0 : u_stretch_x;
-    float sY = (u_stretch_y == 0.0) ? 1.0 : u_stretch_y;
+    // 6. Build and process the Rotation matrix (Converted degrees to radians)
+    float rad = radians(u_rotate);
+    float cosA = cos(rad);
+    float sinA = sin(rad);
+    uv = mat2(
+        cosA, -sinA,
+        sinA,  cosA
+    ) * uv;
 
-    // 4. MANUAL SKEW & SCALE (Bypasses matrix flattening bugs)
-    vec2 transformed_uv;
-    transformed_uv.x = (uv.x + (uv.y * u_skew_x)) / sX;
-    transformed_uv.y = (uv.y + (uv.x * u_skew_y)) / sY;
+    // 7. Revert aspect ratio scaling adjustments
+    uv.x /= aspect;
 
-    // 5. MANUAL ROTATION (Prevents clipping/cropping)
-    float rad = radians(u_rotation);
-    float cosR = cos(rad);
-    float sinR = sin(rad);
+    // 8. Scale transformations (Zoom and independent X/Y Stretch sliders)
+    vec2 scale = vec2(u_stretch_x, u_stretch_y) * u_zoom;
+    uv /= scale;
 
-    vec2 final_uv;
-    final_uv.x = transformed_uv.x * cosR - transformed_uv.y * sinR;
-    final_uv.y = transformed_uv.x * sinR + transformed_uv.y * cosR;
+    // 9. Reposition coordinates back into the original texture canvas space [0.0, 1.0]
+    uv += vec2(0.5);
 
-    // 6. Return origin to standard bottom-left framework layout
-    final_uv += vec2(0.5);
-
-    // 7. ANTI-CROP & ANTI-STRETCH BOUNDARY GATE
-    if (final_uv.x < 0.0 || final_uv.x > 1.0 || final_uv.y < 0.0 || final_uv.y > 1.0) {
-        // Keeps empty outer boundary space transparent instead of creating stretched color bars
-        fragColor = vec4(0.0, 0.0, 0.0, 0.0); 
+    // 10. Handle Boundary Conditions
+    if (u_edge_wrap) {
+        // Fract forces coordinates to wrap perfectly between 0.0 and 1.0 (Tiling)
+        // This solves the giant pixel bug by avoiding clamping hardware states entirely
+        uv = fract(uv);
+        FragColor = texture(u_inputTexture, uv);
     } else {
-        // Output clean transformed texture while matching Qt's native parent layer opacity
-        fragColor = texture(u_base_video, final_uv) * qt_Opacity;
+        // Standard safe-border fallback when tiling is off
+        if (uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0) {
+            FragColor = vec4(0.0, 0.0, 0.0, 0.0); // Transparent border
+        } else {
+            FragColor = texture(u_inputTexture, uv);
+        }
     }
 }
