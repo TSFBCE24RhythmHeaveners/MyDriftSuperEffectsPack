@@ -1,0 +1,56 @@
+{
+  "id": "superpack_colormeta",
+  "displayName": "Adjustments",
+  "category": "Color",
+  "order": 37393000006,
+  "parameters": [
+    {
+      "name": "u_brightness",
+      "type": "float",
+      "defaultValue": 1.0,
+      "minimumValue": 0.0,
+      "maximumValue": 2.0,
+      "displayName": "Brightness"
+    },
+    {
+      "name": "u_contrast",
+      "type": "float",
+      "defaultValue": 1.0,
+      "minimumValue": 0.0,
+      "maximumValue": 2.0,
+      "displayName": "Contrast"
+    },
+    {
+      "name": "u_saturation",
+      "type": "float",
+      "defaultValue": 1.0,
+      "minimumValue": 0.0,
+      "maximumValue": 3.0,
+      "displayName": "Saturation"
+    },
+    {
+      "name": "u_hue",
+      "type": "float",
+      "defaultValue": 0.0,
+      "minimumValue": -180,
+      "maximumValue": 180,
+      "displayName": "Hue"
+    },
+    {
+      "name": "u_temperature",
+      "type": "float",
+      "defaultValue": 0.0,
+      "minimumValue": -1.0,
+      "maximumValue": 1.0,
+      "displayName": "Temperature
+    },
+    {
+      "name": "u_tint",
+      "type": "float",
+      "defaultValue": 0.0,
+      "minimumValue": -1.0,
+      "maximumValue": 1.0,
+      "displayName": "Tint"
+    }
+  ]
+}
