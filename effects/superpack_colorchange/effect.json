@@ -3,6 +3,32 @@
   "displayName": "SuperPack Colour Changer",
   "category": "color",
   "order": 37393000002,
+  "parameters": [
+    {
+      "identifier": "u_Temperature",
+      "displayName": "Temperature",
+      "type": "float",
+      "minValue": -1.0,
+      "maxValue": 1.0,
+      "defaultValue": 0.0
+    },
+    {
+      "identifier": "u_Tint",
+      "displayName": "Tint",
+      "type": "float",
+      "minValue": -1.0,
+      "maxValue": 1.0,
+      "defaultValue": 0.0
+    },
+    {
+      "identifier": "u_Saturation",
+      "displayName": "Saturation",
+      "type": "float",
+      "minValue": -1.0,
+      "maxValue": 1.0,
+      "defaultValue": 0.0
+    }
+  ],
   "backend": "gpu",
   "pipeline": {
     "intermediateBuffers": [],
@@ -21,30 +47,4 @@
       }
     ]
   }
-  "parameters": [
-    {
-      "identifier": "u_Temperature",
-      "displayName": "Temperature",
-      "type": "float",
-      "minValue": -1.0,
-      "maxValue": 1.0,
-      "defaultValue": 0.0,
-    },
-    {
-      "identifier": "u_Tint",
-      "displayName": "Tint",
-      "type": "float",
-      "minValue": -1.0,
-      "maxValue": 1.0,
-      "defaultValue": 0.0,
-    },
-    {
-      "identifier": "u_Saturation",
-      "displayName": "Saturation",
-      "type": "float",
-      "minValue": -1.0,
-      "maxValue": 1.0,
-      "defaultValue": 0.0,
-    }
-  ],
 }
