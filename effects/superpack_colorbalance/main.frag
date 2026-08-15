@@ -24,7 +24,7 @@ vec3 safeColorBoundaries(vec3 color) {
 
 void main()
 {
-    // PERFECT FIX FOR THE GIANT PIXEL STRIKE BUG:
+    // PERFECT FIX FOR THE GIANT PIXEL BUG:
     // Adding a zero-value algebraic calculation dependent on global variables breaks Qt's 
     // static compiler optimization loop. This forces a true high-precision dependent coordinate 
     // lookup, locking the pixel sampler directly to the underlying source video grid layout.
