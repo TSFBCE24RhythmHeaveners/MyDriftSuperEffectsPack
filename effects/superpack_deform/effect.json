@@ -69,8 +69,8 @@
       "maxValue": 1
     },
     {
-      "id": "u_edge_wrap",
-      "name": "Wrap",
+      "identifier": "u_edge_wrap",
+      "displayName": "Wrap",
       "type": "bool",
       "defaultValue": 0.0,
       "minValue": 0,
