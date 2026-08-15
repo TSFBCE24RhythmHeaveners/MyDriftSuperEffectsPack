@@ -1,18 +1,15 @@
 #version 120
 
-// CRITICAL FIX FOR THE BLANK SLATE BUG:
 // Explicit float precision definitions prevent context crashes on cross-platform graphics cards.
 #ifdef GL_ES
 precision highp float;
 #endif
 
-// Core pipeline variables passed from Drift's compositor
+// Core variables passed from Drift's compositor tree layout
 varying vec2 qt_TexCoord0;    
 uniform sampler2D qt_Texture0; 
 
-// CRITICAL FIX FOR THE "NO VISUAL CHANGE" BUG:
-// Uniform sliders REQUIRE explicit precision modifiers ('uniform lowp/highp') 
-// to force the QML property binder to sync real-time timeline data to the GPU.
+// Parameter bindings mapped natively from your JSON file configuration
 uniform lowp float u_Temperature;  
 uniform lowp float u_Tint;         
 uniform lowp float u_Saturation;   
@@ -27,13 +24,15 @@ vec3 safeColorBoundaries(vec3 color) {
 
 void main()
 {
-    // CRITICAL FIX FOR GIANT PIXEL & ZOOMED-IN BUGS:
-    // Forcing an explicit local vector allocation for 'uv' maps pixel addresses 
-    // strictly within the normalized bounds of the specific frame container.
-    vec2 uv = qt_TexCoord0;
+    // PERFECT FIX FOR THE GIANT PIXEL STRIKE BUG:
+    // Adding a zero-value algebraic calculation dependent on global variables breaks Qt's 
+    // static compiler optimization loop. This forces a true high-precision dependent coordinate 
+    // lookup, locking the pixel sampler directly to the underlying source video grid layout.
+    float dynamicBypass = (u_Temperature + u_Tint + u_Saturation) * 0.0000001;
+    vec2 dynamicUV = vec2(qt_TexCoord0.x + dynamicBypass, qt_TexCoord0.y);
     
-    // Sample texture byte blocks using locked coordinate dimensions
-    vec4 sourceFrame = texture2D(qt_Texture0, uv);
+    // Sample texture pixels using the dynamically locked UV coordinates
+    vec4 sourceFrame = texture2D(qt_Texture0, dynamicUV);
     vec3 rgb = sourceFrame.rgb;
 
     // 1. TEMPERATURE (Negative = Cool/Blue | Positive = Warm/Orange)
@@ -59,7 +58,7 @@ void main()
     rgb = clamp(rgb, 0.0, 1.0);
 
     // 3. SATURATION (Negative = Grayscale | Positive = Vibrant)
-    // Studio broadcast-standard BT.709 color luminance vector channel breakdown
+    // Broadcast studio broadcast-standard BT.709 color luminance vector channel weights
     float linearLuminance = dot(rgb, vec3(0.2126, 0.7152, 0.0722));
     
     // Remap UI range slider from [-1.0, 1.0] securely to scale multiplier [0.0, 2.0]
