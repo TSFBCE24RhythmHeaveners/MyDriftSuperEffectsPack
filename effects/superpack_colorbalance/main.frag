@@ -1,14 +1,21 @@
 #version 440
 
+// Small precision fallback for GLES builds
+#ifdef GL_ES
+    precision mediump float;
+#endif
+
 // Standard Qt6 / QML video post-processing inputs
 layout(location = 0) in vec2 qt_TexCoord0;
 layout(location = 0) out vec4 fragColor;
 
 // CutWire Drift core sampler uniform
-layout(binding = 1) uniform sampler2D source;
+// NOTE: CutWire Drift binds the source texture to binding=0 — use that to avoid the blank-slate bug
+layout(binding = 0) uniform sampler2D source;
 
 // Core UI control variables mapping to your parameters
-layout(std140, binding = 0) uniform buf {
+// Bind the uniform buffer to 1 so it doesn't conflict with the texture binding
+layout(std140, binding = 1) uniform buf {
     mat4 qt_Matrix;
     float qt_Opacity;
     
