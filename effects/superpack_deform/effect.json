@@ -1,64 +1,68 @@
 {
   "id": "superpack_deform",
   "displayName": "SuperPack Deform",
-  "order": 37393000005,
   "category": "glitch",
+  "order": 37393000005,
   "parameters": [
     {
-      "displayName": "Stretch X",
+      "identifier": "u_zoom",
+      "displayName": "Zoom",
+      "type": "float",
+      "minValue": 0.1,
+      "maxValue": 10.0,
+      "defaultValue": 1.0
+    },
+    {
       "identifier": "u_stretch_x",
+      "displayName": "Stretch X",
       "type": "float",
-      "defaultValue": 1.0,
-      "minValue": 0.05,
-      "maxValue": 5.0
+      "minValue": 0.1,
+      "maxValue": 5.0,
+      "defaultValue": 1.0
     },
     {
-      "displayName": "Stretch Y",
       "identifier": "u_stretch_y",
+      "displayName": "Stretch Y",
       "type": "float",
-      "defaultValue": 1.0,
-      "minValue": 0.05,
-      "maxValue": 5.0
+      "minValue": 0.1,
+      "maxValue": 5.0,
+      "defaultValue": 1.0
     },
     {
-      "displayName": "Skew X",
+      "identifier": "u_rotate",
+      "displayName": "Rotate (Degrees)",
+      "type": "float",
+      "minValue": -180.0,
+      "maxValue": 180.0,
+      "defaultValue": 0.0
+    },
+    {
       "identifier": "u_skew_x",
+      "displayName": "Skew X",
       "type": "float",
-      "defaultValue": 0.0,
-      "minValue": -2.0,
-      "maxValue": 2.0
+      "minValue": -5.0,
+      "maxValue": 5.0,
+      "defaultValue": 0.0
     },
     {
-      "displayName": "Skew Y",
       "identifier": "u_skew_y",
+      "displayName": "Skew Y",
       "type": "float",
-      "defaultValue": 0.0,
-      "minValue": -2.0,
-      "maxValue": 2.0
-    },
-    {
-      "displayName": "Rotation (Degrees)",
-      "identifier": "u_rotation",
-      "type": "float",
-      "defaultValue": 0.0,
-      "minValue": -360.0,
-      "maxValue": 360.0
+      "minValue": -5.0,
+      "maxValue": 5.0,
+      "defaultValue": 0.0
     },
     {
       "identifier": "u_flip_h",
-      "displayName": "Horizontal Flip",
+      "displayName": "Flip Horizontal",
       "type": "bool",
-      "defaultValue": 0.0,
-      "minValue": 0,
-      "maxValue": 1
+      "defaultValue": false
     },
     {
       "identifier": "u_flip_v",
-      "displayName": "Vertical Flip",
+      "displayName": "Flip Vertical",
       "type": "bool",
-      "defaultValue": 0.0,
-      "minValue": 0,
-      "maxValue": 1
+      "defaultValue": false
     }
   ],
   "backend": "gpu",
