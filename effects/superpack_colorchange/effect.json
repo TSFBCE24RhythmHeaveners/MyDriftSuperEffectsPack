@@ -5,7 +5,7 @@
   "order": 37393000002,
   "parameters": [
     {
-      "identifier": "u_Temperature",
+      "identifier": "u_temperature",
       "displayName": "Temperature",
       "type": "float",
       "minValue": -1.0,
@@ -13,7 +13,7 @@
       "defaultValue": 0.0
     },
     {
-      "identifier": "u_Tint",
+      "identifier": "u_tint",
       "displayName": "Tint",
       "type": "float",
       "minValue": -1.0,
@@ -21,7 +21,7 @@
       "defaultValue": 0.0
     },
     {
-      "identifier": "u_Saturation",
+      "identifier": "u_saturation",
       "displayName": "Saturation",
       "type": "float",
       "minValue": -1.0,
