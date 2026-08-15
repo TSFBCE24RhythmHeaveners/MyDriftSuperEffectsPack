@@ -9,7 +9,7 @@ void main() {
         return;
     }
 
-    float a = clamp(amount, 0.0, 1.0) * 0.04;
+    float a = clamp(amount, 0.0, 10.0) * 0.04;
     float f = clamp(frequency, 1.0, 20.0);
     float t = u_time * speed;
     vec2 uv = v_texCoord;
