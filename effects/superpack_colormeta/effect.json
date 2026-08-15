@@ -1,11 +1,11 @@
 {
-  "id": "superpack_colormeta",
-  "displayName": "Adjustments",
+  "identifier": "superpack_colormeta",
+  "displayName": "SuperPack Adjustments",
   "category": "color",
   "order": 37393000006,
   "parameters": [
     {
-      "name": "u_brightness",
+      "identifier": "u_brightness",
       "type": "float",
       "defaultValue": 1.0,
       "minValue": 0.0,
@@ -13,7 +13,7 @@
       "displayName": "Brightness"
     },
     {
-      "name": "u_contrast",
+      "identifier": "u_contrast",
       "type": "float",
       "defaultValue": 1.0,
       "minValue": 0.0,
@@ -21,7 +21,7 @@
       "displayName": "Contrast"
     },
     {
-      "name": "u_saturation",
+      "identifier": "u_saturation",
       "type": "float",
       "defaultValue": 1.0,
       "minValue": 0.0,
@@ -29,7 +29,7 @@
       "displayName": "Saturation"
     },
     {
-      "name": "u_hue",
+      "identifier": "u_hue",
       "type": "float",
       "defaultValue": 0.0,
       "minValue": -180,
@@ -37,7 +37,7 @@
       "displayName": "Hue"
     },
     {
-      "name": "u_temperature",
+      "identifier": "u_temperature",
       "type": "float",
       "defaultValue": 0.0,
       "minValue": -1.0,
@@ -45,7 +45,7 @@
       "displayName": "Temperature"
     },
     {
-      "name": "u_tint",
+      "identifier": "u_tint",
       "type": "float",
       "defaultValue": 0.0,
       "minValue": -1.0,
