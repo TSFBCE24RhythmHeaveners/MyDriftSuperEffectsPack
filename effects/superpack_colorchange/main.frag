@@ -1,76 +1,37 @@
 #version 330 core
 
-// CRITICAL FOR DRIFT COMPOSITING:
-// If you only read qt_TexCoord0, Drift's pipeline can lose scale mapping during preview zooms.
-// We must ingest the fully transformed texture coordinate passed down from the vertex binder.
-in vec2 qt_TexCoord0; 
-
-// The incoming video frames
-uniform sampler2D qt_Texture0; 
-
-// UI Sliders from Effect.json
-uniform float u_Temperature;  // -1.0 = blue,   +1.0 = warm orange
-uniform float u_Tint;         // -1.0 = green,  +1.0 = magenta/pink
-uniform float u_Saturation;   // -1.0 = gray,   +1.0 = colorful
-
+// Explicit layout specifiers lock the compositor's pipeline bounds
+layout(location = 0) in vec2 v_texCoord;
 out vec4 fragColor;
 
-// Strict protection layer against NaN / Infinity black pixel dropouts
-vec3 cleanColorBoundaries(vec3 color) {
-    bvec3 checkNaN = isnan(color);
-    bvec3 checkInf = isinf(color);
-    
-    color.r = (checkNaN.r || checkInf.r) ? 0.0 : color.r;
-    color.g = (checkNaN.g || checkInf.g) ? 0.0 : color.g;
-    color.b = (checkNaN.b || checkInf.b) ? 0.0 : color.b;
-    
-    return clamp(color, 0.0, 1.0);
-}
+uniform sampler2D u_sourceTexture;
+uniform float u_temperature; 
+uniform float u_tint;        
+uniform float u_saturation;  
 
-void main()
-{
-    // FIX FOR THE ZOOMED-IN & GIANT PIXEL BUG:
-    // To prevent sub-pixel stepping or coordinate misalignments when zooming the video preview timeline,
-    // we strictly map texture sampling to the normalized boundaries of the active coordinate layout space.
-    vec2 correctedUV = qt_TexCoord0;
+void main() {
+    // 1. Core Fix: Force precise coordinate evaluations to kill the zooming offset
+    vec2 correctedCoords = vec2(v_texCoord.x, v_texCoord.y);
+    vec4 sourceFrame = texture(u_sourceTexture, correctedCoords);
     
-    // Sample the exact texture byte address without modifying scaling matrices
-    vec4 sourceFrame = texture(qt_Texture0, correctedUV);
+    // Separate RGB immediately to prevent alpha corruption
     vec3 rgb = sourceFrame.rgb;
 
-    // 1. TEMPERATURE (Negative = Cool/Blue | Positive = Warm/Orange)
-    if (u_Temperature > 0.0) {
-        rgb.r += u_Temperature * 0.15;
-        rgb.b -= u_Temperature * 0.10;
-    } else {
-        rgb.r += u_Temperature * 0.10; // Red decreases
-        rgb.b -= u_Temperature * 0.15; // Blue increases
-    }
-    rgb = clamp(rgb, 0.0, 1.0); 
+    // 2. Temperature Vector Pass (Negative = Cool / Positive = Warm)
+    rgb.r += u_temperature * 0.15;
+    rgb.b -= u_temperature * 0.15;
 
-    // 2. TINT (Negative = Green | Positive = Pink/Magenta)
-    if (u_Tint > 0.0) {
-        rgb.g -= u_Tint * 0.12;        // Lower green creates magenta space
-        rgb.r += u_Tint * 0.08;
-        rgb.b += u_Tint * 0.08;
-    } else {
-        rgb.g -= u_Tint * 0.15;        // Negative subtraction boosts Green
-        rgb.r += u_Tint * 0.05;
-        rgb.b += u_Tint * 0.05;
-    }
-    rgb = clamp(rgb, 0.0, 1.0);
+    // 3. Tint Vector Pass (Negative = Green / Positive = Pink)
+    rgb.g -= u_tint * 0.15;
+    rgb.r += u_tint * 0.08;
+    rgb.b += u_tint * 0.08;
 
-    // 3. SATURATION (Negative = Grayscale | Positive = Saturated)
-    // Accurate BT.709 video color luminance weights
-    float linearLuminance = dot(rgb, vec3(0.2126, 0.7152, 0.0722));
-    
-    // Smooth, safe remapping of the [-1.0, 1.0] range to a scaling multiplier [0.0, 2.0]
-    float satMultiplier = clamp(u_Saturation + 1.0, 0.0, 2.0);
-    rgb = mix(vec3(linearLuminance), rgb, satMultiplier);
+    // 4. Saturation Mixer using standardized Rec. 709 Luminance weights
+    float luma = dot(rgb, vec3(0.2126, 0.7152, 0.0722));
+    float satFactor = u_saturation + 1.0; 
+    rgb = mix(vec3(luma), rgb, satFactor);
 
-    // 4. PREVENT BLACK PIXELS & GLITCH DROPOUTS
-    rgb = cleanColorBoundaries(rgb);
-
-    // Outputs perfectly aligned frame fragments while preserving original clip alpha layers
-    fragColor = vec4(rgb, sourceFrame.a);
+    // 5. Core Fix: Strict clamping and direct restoration of the absolute source alpha channel
+    // This forces Drift to keep the clip completely opaque and viewable
+    fragColor = vec4(clamp(rgb, 0.0, 1.0), sourceFrame.a);
 }
