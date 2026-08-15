@@ -56,13 +56,17 @@
       "identifier": "u_flip_h",
       "displayName": "Flip Horizontal",
       "type": "bool",
-      "defaultValue": false
+      "defaultValue": 0.0,
+      "minValue": 0,
+      "maxValue": 1
     },
     {
       "identifier": "u_flip_v",
       "displayName": "Flip Vertical",
       "type": "bool",
-      "defaultValue": false
+      "defaultValue": 0.0,
+      "minValue": 0,
+      "maxValue": 1
     }
   ],
   "backend": "gpu",
