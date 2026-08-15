@@ -9,7 +9,7 @@
       "displayName": "Amount",
       "type": "float",
       "minValue": 0,
-      "maxValue": 1,
+      "maxValue": 2,
       "defaultValue": 0.2
     },
     {
