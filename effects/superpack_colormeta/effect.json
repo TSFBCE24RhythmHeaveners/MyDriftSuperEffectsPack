@@ -42,7 +42,7 @@
       "defaultValue": 0.0,
       "minimumValue": -1.0,
       "maximumValue": 1.0,
-      "displayName": "Temperature
+      "displayName": "Temperature"
     },
     {
       "name": "u_tint",
@@ -52,5 +52,23 @@
       "maximumValue": 1.0,
       "displayName": "Tint"
     }
-  ]
+  ],
+  "backend": "gpu",
+  "pipeline": {
+    "intermediateBuffers": [],
+    "passes": [
+      {
+        "passIndex": 0,
+        "fragmentShader": "main.frag",
+        "inputs": [
+          {
+            "type": "source_texture"
+          }
+        ],
+        "output": {
+          "type": "canvas"
+        }
+      }
+    ]
+  }
 }
