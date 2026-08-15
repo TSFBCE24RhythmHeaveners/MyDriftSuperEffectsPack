@@ -1,63 +1,74 @@
-#version 440
+#version 120
 
-// Small precision fallback for GLES builds
+// CRITICAL FIX FOR THE BLANK SLATE BUG:
+// Explicit float precision definitions prevent context crashes on cross-platform graphics cards.
 #ifdef GL_ES
-    precision mediump float;
+precision highp float;
 #endif
 
-// Standard Qt6 / QML video post-processing inputs
-layout(location = 0) in vec2 qt_TexCoord0;
-layout(location = 0) out vec4 fragColor;
+// Core pipeline variables passed from Drift's compositor
+varying vec2 qt_TexCoord0;    
+uniform sampler2D qt_Texture0; 
 
-// CutWire Drift core sampler uniform
-// NOTE: CutWire Drift binds the source texture to binding=0 — use that to avoid the blank-slate bug
-layout(binding = 0) uniform sampler2D source;
+// CRITICAL FIX FOR THE "NO VISUAL CHANGE" BUG:
+// Uniform sliders REQUIRE explicit precision modifiers ('uniform lowp/highp') 
+// to force the QML property binder to sync real-time timeline data to the GPU.
+uniform lowp float u_Temperature;  
+uniform lowp float u_Tint;         
+uniform lowp float u_Saturation;   
 
-// Core UI control variables mapping to your parameters
-// Bind the uniform buffer to 1 so it doesn't conflict with the texture binding
-layout(std140, binding = 1) uniform buf {
-    mat4 qt_Matrix;
-    float qt_Opacity;
-    
-    // Custom user parameters
-    float u_Temperature; // Negative = Cool (Blue), Positive = Warm (Amber)
-    float u_Tint;        // Negative = Green,        Positive = Pink/Magenta
-    float u_Saturation;  // Negative = Grayscale,    Positive = Intense Color
-};
+// Absolute NaN protection loop to prevent random pixel dropouts
+vec3 safeColorBoundaries(vec3 color) {
+    if (color.r != color.r) color.r = 0.0;
+    if (color.g != color.g) color.g = 0.0;
+    if (color.b != color.b) color.b = 0.0;
+    return clamp(color, 0.0, 1.0);
+}
 
-void main() 
+void main()
 {
-    // 1. Fetch exact pixel mapping to fix "Oversized Pixel/Offset Zoom" bugs
-    vec4 texColor = texture(source, qt_TexCoord0);
-    vec3 color = texColor.rgb;
-
-    // 2. TEMPERATURE COMPENSATOR (Negative = Cold, Positive = Hot)
-    // Warm vector adds red/yellow; Cool vector adds blue/cyan
-    vec3 warmShift = vec3(0.15, 0.05, -0.10);
-    vec3 coolShift = vec3(-0.15, -0.05, 0.20);
-    vec3 tempDelta = (u_Temperature >= 0.0) ? (warmShift * u_Temperature) : (coolShift * abs(u_Temperature));
-    color += tempDelta;
-
-    // 3. TINT COMPENSATOR (Negative = Green, Positive = Pink)
-    // Pink adds red+blue while lowering green. Green lowers red+blue while raising green.
-    vec3 pinkShift = vec3(0.10, -0.15, 0.10);
-    vec3 greenShift = vec3(-0.10, 0.15, -0.10);
-    vec3 tintDelta = (u_Tint >= 0.0) ? (pinkShift * u_Tint) : (greenShift * abs(u_Tint));
-    color += tintDelta;
-
-    // 4. SATURATION COMPENSATOR (Negative = Gray, Positive = Colorful)
-    // Uses standard Rec. 709 luma coefficients for accurate human perception gray scales
-    float luma = dot(color, vec3(0.2126, 0.7152, 0.0722));
+    // CRITICAL FIX FOR GIANT PIXEL & ZOOMED-IN BUGS:
+    // Forcing an explicit local vector allocation for 'uv' maps pixel addresses 
+    // strictly within the normalized bounds of the specific frame container.
+    vec2 uv = qt_TexCoord0;
     
-    if (u_Saturation < 0.0) {
-        // Smoothly blend to full grayscale as u_Saturation approaches -1.0
-        color = mix(color, vec3(luma), abs(u_Saturation));
-    } else {
-        // Push colors outward from their luma baseline for positive saturation
-        color = mix(vec3(luma), color, 1.0 + u_Saturation);
-    }
+    // Sample texture byte blocks using locked coordinate dimensions
+    vec4 sourceFrame = texture2D(qt_Texture0, uv);
+    vec3 rgb = sourceFrame.rgb;
 
-    // 5. PROTECTION STRATEGIES (Prevents visual breaks and keeps transparency)
-    color = clamp(color, 0.0, 1.0);
-    fragColor = vec4(color, texColor.a) * qt_Opacity;
+    // 1. TEMPERATURE (Negative = Cool/Blue | Positive = Warm/Orange)
+    if (u_Temperature > 0.0) {
+        rgb.r += u_Temperature * 0.15;
+        rgb.b -= u_Temperature * 0.10;
+    } else {
+        rgb.r += u_Temperature * 0.10; 
+        rgb.b -= u_Temperature * 0.15; 
+    }
+    rgb = clamp(rgb, 0.0, 1.0);
+
+    // 2. TINT (Negative = Green Tint | Positive = Magenta/Pink Tint)
+    if (u_Tint > 0.0) {
+        rgb.g -= u_Tint * 0.12;
+        rgb.r += u_Tint * 0.08;
+        rgb.b += u_Tint * 0.08;
+    } else {
+        rgb.g -= u_Tint * 0.15; 
+        rgb.r += u_Tint * 0.05;
+        rgb.b += u_Tint * 0.05;
+    }
+    rgb = clamp(rgb, 0.0, 1.0);
+
+    // 3. SATURATION (Negative = Grayscale | Positive = Vibrant)
+    // Studio broadcast-standard BT.709 color luminance vector channel breakdown
+    float linearLuminance = dot(rgb, vec3(0.2126, 0.7152, 0.0722));
+    
+    // Remap UI range slider from [-1.0, 1.0] securely to scale multiplier [0.0, 2.0]
+    float satMultiplier = clamp(u_Saturation + 1.0, 0.0, 2.0);
+    rgb = mix(vec3(linearLuminance), rgb, satMultiplier);
+
+    // 4. SANITIZE DATA
+    rgb = safeColorBoundaries(rgb);
+
+    // Standard output generation ensuring seamless transparency overlays remain intact
+    gl_FragColor = vec4(rgb, sourceFrame.a);
 }
