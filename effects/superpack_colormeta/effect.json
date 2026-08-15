@@ -8,48 +8,48 @@
       "name": "u_brightness",
       "type": "float",
       "defaultValue": 1.0,
-      "minimumValue": 0.0,
-      "maximumValue": 2.0,
+      "minValue": 0.0,
+      "maxValue": 2.0,
       "displayName": "Brightness"
     },
     {
       "name": "u_contrast",
       "type": "float",
       "defaultValue": 1.0,
-      "minimumValue": 0.0,
-      "maximumValue": 2.0,
+      "minValue": 0.0,
+      "maxValue": 2.0,
       "displayName": "Contrast"
     },
     {
       "name": "u_saturation",
       "type": "float",
       "defaultValue": 1.0,
-      "minimumValue": 0.0,
-      "maximumValue": 3.0,
+      "minValue": 0.0,
+      "maxValue": 3.0,
       "displayName": "Saturation"
     },
     {
       "name": "u_hue",
       "type": "float",
       "defaultValue": 0.0,
-      "minimumValue": -180,
-      "maximumValue": 180,
+      "minValue": -180,
+      "maxValue": 180,
       "displayName": "Hue"
     },
     {
       "name": "u_temperature",
       "type": "float",
       "defaultValue": 0.0,
-      "minimumValue": -1.0,
-      "maximumValue": 1.0,
+      "minValue": -1.0,
+      "maxValue": 1.0,
       "displayName": "Temperature"
     },
     {
       "name": "u_tint",
       "type": "float",
       "defaultValue": 0.0,
-      "minimumValue": -1.0,
-      "maximumValue": 1.0,
+      "minValue": -1.0,
+      "maxValue": 1.0,
       "displayName": "Tint"
     }
   ],
