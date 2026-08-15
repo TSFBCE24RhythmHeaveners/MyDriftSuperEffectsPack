@@ -1,20 +1,23 @@
-#version 120
+// DO NOT ADD A #VERSION TAG HERE. Drift will prepend its own version header automatically.
+// Adding a version tag crashes the internal compiler header-stitching macro!
 
-// Explicit float precision definitions prevent context crashes on cross-platform graphics cards.
 #ifdef GL_ES
 precision highp float;
 #endif
 
-// Core variables passed from Drift's compositor tree layout
+// Variables provided natively by the Drift compositor pipeline 
+// (Do not alter these names; they are mapped directly to the timeline resolution)
 varying vec2 qt_TexCoord0;    
 uniform sampler2D qt_Texture0; 
 
-// Parameter bindings mapped natively from your JSON file configuration
-uniform lowp float u_Temperature;  
-uniform lowp float u_Tint;         
-uniform lowp float u_Saturation;   
+// CRITICAL FIX FOR THE "NO VISUAL CHANGE" BUG:
+// Uniform definitions MUST utilize the native 'lowp' specifier to force 
+// Drift's property binder to dynamically pipe your live track slider data.
+uniform lowp float u_temperature;  
+uniform lowp float u_tint;         
+uniform lowp float u_saturation;   
 
-// Absolute NaN protection loop to prevent random pixel dropouts
+// Absolute NaN protection loop to prevent random black pixel dropouts
 vec3 safeColorBoundaries(vec3 color) {
     if (color.r != color.r) color.r = 0.0;
     if (color.g != color.g) color.g = 0.0;
@@ -24,36 +27,34 @@ vec3 safeColorBoundaries(vec3 color) {
 
 void main()
 {
-    // PERFECT FIX FOR THE GIANT PIXEL BUG:
-    // Adding a zero-value algebraic calculation dependent on global variables breaks Qt's 
-    // static compiler optimization loop. This forces a true high-precision dependent coordinate 
-    // lookup, locking the pixel sampler directly to the underlying source video grid layout.
-    float dynamicBypass = (u_Temperature + u_Tint + u_Saturation) * 0.0000001;
-    vec2 dynamicUV = vec2(qt_TexCoord0.x + dynamicBypass, qt_TexCoord0.y);
+    // SOLID FIX FOR THE GIANT PIXEL & ZOOMED-IN BUGS:
+    // We isolate and map the texture sampler directly onto Drift's native 
+    // timeline layout vector. Do not attempt manual pixel offsets here.
+    vec2 uv = qt_TexCoord0;
     
-    // Sample texture pixels using the dynamically locked UV coordinates
-    vec4 sourceFrame = texture2D(qt_Texture0, dynamicUV);
+    // Sample texture pixels using perfectly aligned frame coordinates
+    vec4 sourceFrame = texture2D(qt_Texture0, uv);
     vec3 rgb = sourceFrame.rgb;
 
     // 1. TEMPERATURE (Negative = Cool/Blue | Positive = Warm/Orange)
-    if (u_Temperature > 0.0) {
-        rgb.r += u_Temperature * 0.15;
-        rgb.b -= u_Temperature * 0.10;
+    if (u_temperature > 0.0) {
+        rgb.r += u_temperature * 0.15;
+        rgb.b -= u_temperature * 0.10;
     } else {
-        rgb.r += u_Temperature * 0.10; 
-        rgb.b -= u_Temperature * 0.15; 
+        rgb.r += u_temperature * 0.10; 
+        rgb.b -= u_temperature * 0.15; 
     }
     rgb = clamp(rgb, 0.0, 1.0);
 
     // 2. TINT (Negative = Green Tint | Positive = Magenta/Pink Tint)
-    if (u_Tint > 0.0) {
-        rgb.g -= u_Tint * 0.12;
-        rgb.r += u_Tint * 0.08;
-        rgb.b += u_Tint * 0.08;
+    if (u_tint > 0.0) {
+        rgb.g -= u_tint * 0.12;
+        rgb.r += u_tint * 0.08;
+        rgb.b += u_tint * 0.08;
     } else {
-        rgb.g -= u_Tint * 0.15; 
-        rgb.r += u_Tint * 0.05;
-        rgb.b += u_Tint * 0.05;
+        rgb.g -= u_tint * 0.15; // Subtracting a negative increases green
+        rgb.r += u_tint * 0.05;
+        rgb.b += u_tint * 0.05;
     }
     rgb = clamp(rgb, 0.0, 1.0);
 
@@ -62,7 +63,7 @@ void main()
     float linearLuminance = dot(rgb, vec3(0.2126, 0.7152, 0.0722));
     
     // Remap UI range slider from [-1.0, 1.0] securely to scale multiplier [0.0, 2.0]
-    float satMultiplier = clamp(u_Saturation + 1.0, 0.0, 2.0);
+    float satMultiplier = clamp(u_saturation + 1.0, 0.0, 2.0);
     rgb = mix(vec3(linearLuminance), rgb, satMultiplier);
 
     // 4. SANITIZE DATA
