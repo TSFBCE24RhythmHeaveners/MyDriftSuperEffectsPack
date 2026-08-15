@@ -3,7 +3,7 @@
 layout(location = 0) in vec2 v_texCoord;
 out vec4 fragColor;
 
-uniform sampler2D u_sourceTexture;
+uniform sampler2D u_currentTexture;
 
 // The JSON "name" maps explicitly to these variables
 uniform float u_temperature; 
