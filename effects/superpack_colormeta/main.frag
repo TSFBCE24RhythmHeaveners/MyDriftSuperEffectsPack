@@ -1,20 +1,23 @@
 #version 330 core
 
+// Dedicated render buffer output target for CutWire Drift's pipeline
 out vec4 FragColor;
+
+// Raw incoming coordinate vectors from Drift's vertex engine
 in vec2 TexCoords;
+
+// Source element texture unit passed by the FrameCompositor
 uniform sampler2D u_texture;
 
-// --- Uniform Adjustment Sliders ---
+// --- Raw Uniform Input Registers ---
 uniform float u_brightness;  
 uniform float u_contrast;    
 uniform float u_saturation;  
+uniform float u_hue; 
 uniform float u_temperature; 
 uniform float u_tint;        
 
-// Updated: Expects degrees from 0.0 to 360.0 (Default: 0.0)
-uniform float u_hue; 
-
-// --- Helper Functions ---
+// --- Precision Color-Space Conversion Routines ---
 vec3 rgb2hsv(vec3 c) {
     vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
     vec4 p = mix(vec4(c.bg, K.wz), vec4(c.gb, K.xy), step(c.b, c.g));
@@ -32,29 +35,60 @@ vec3 hsv2rgb(vec3 c) {
 }
 
 void main() {
-    vec4 texColor = texture(u_texture, TexCoords);
-    vec3 color = texColor.rgb;
+    // ------------------------------------------------------------------------
+    // PROTECTION STEP 1: ISOLATED SAMPLING
+    // We sample texture coordinates cleanly up front. No modifying coordinates.
+    // ------------------------------------------------------------------------
+    vec4 rawFrameSample = texture(u_texture, TexCoords);
+    vec3 localRGB = rawFrameSample.rgb;
 
-    // Brightness & Contrast
-    color *= u_brightness;
-    color = (color - 0.5) * u_contrast + 0.5;
+    // ------------------------------------------------------------------------
+    // PROTECTION STEP 2: COMPLETE THREAD-LOCAL ISOLATION & RANGE DEFENSE
+    // We bind all external values to isolated local variables and force matching
+    // float types (.0) to prevent the GPU compiler from dropping back into integer 
+    // truncation blocks that cause the mipmap giant pixel snaps.
+    // ------------------------------------------------------------------------
+    float safeBrightness  = clamp(u_brightness, 0.0, 2.0);
+    float safeContrast    = clamp(u_contrast, 0.0, 2.0);
+    float safeSaturation  = clamp(u_saturation, 0.0, 3.0);
+    float safeHueDegrees  = clamp(u_hue, -360.0, 360.0);
+    float safeTemperature = clamp(u_temperature, -1.0, 1.0);
+    float safeTint        = clamp(u_tint, -1.0, 1.0);
 
-    // White Balance
-    color.r += u_temperature * 0.12;
-    color.b -= u_temperature * 0.12;
-    color.g -= u_tint * 0.08;
-    color.r += u_tint * 0.05;
-    color.b += u_tint * 0.05;
-
-    // Color Space Shifts
-    vec3 hsv = rgb2hsv(color);
+    // ------------------------------------------------------------------------
+    // EXECUTION STEP 3: SEQUENTIAL COMPONENT MODIFICATION
+    // ------------------------------------------------------------------------
     
-    // Convert 0-360 degrees to a normalized 0.0-1.0 range and wrap safely
-    float normalizedHueShift = u_hue / 360.0;
-    hsv.x = mod(hsv.x + normalizedHueShift, 1.0); 
-    
-    hsv.y *= u_saturation;           
-    color = hsv2rgb(hsv);
+    // A. Brightness (Uniform scalar scaling)
+    localRGB *= safeBrightness;
 
-    FragColor = vec4(clamp(color, 0.0, 1.0), texColor.a);
+    // B. Contrast (Component vector interpolation relative to neutral gray 0.5)
+    localRGB = (localRGB - vec3(0.5)) * safeContrast + vec3(0.5);
+
+    // C. White Balance (Isolated scalar addition across explicit channels)
+    localRGB.r += safeTemperature * 0.12;
+    localRGB.b -= safeTemperature * 0.12;
+    
+    localRGB.g -= safeTint * 0.08;
+    localRGB.r += safeTint * 0.05;
+    localRGB.b += safeTint * 0.05;
+
+    // D. Hue Shift & Saturation Scaling
+    vec3 localHSV = rgb2hsv(localRGB);
+    
+    // Explicit division using safe types prevents runtime compilation loops
+    float computedHueShift = safeHueDegrees / 360.0;
+    localHSV.x = mod(localHSV.x + computedHueShift, 1.0); 
+    
+    // Scale saturation parameter locally
+    localHSV.y *= safeSaturation;           
+    
+    // Revert color maps to standard RGB
+    localRGB = hsv2rgb(localHSV);
+
+    // ------------------------------------------------------------------------
+    // PROTECTION STEP 4: STRICT CLAMP BOUNDARY
+    // We bind outputs firmly between 0.0 and 1.0 to preserve native alpha channels.
+    // ------------------------------------------------------------------------
+    FragColor = vec4(clamp(localRGB, 0.0, 1.0), rawFrameSample.a);
 }
