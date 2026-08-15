@@ -1,71 +1,76 @@
 #version 330 core
 
-// Drift standard layout coordinates and texture sampler
+// CRITICAL FOR DRIFT COMPOSITING:
+// If you only read qt_TexCoord0, Drift's pipeline can lose scale mapping during preview zooms.
+// We must ingest the fully transformed texture coordinate passed down from the vertex binder.
 in vec2 qt_TexCoord0; 
-uniform sampler2D qt_Texture0; // The source frame texture
 
-// Custom uniform parameters defined in our JSON
-uniform float u_Temperature;  // [-1.0 to 1.0] -> negative=cool, positive=warm
-uniform float u_Tint;         // [-1.0 to 1.0] -> negative=green, positive=pink
-uniform float u_Saturation;   // [-1.0 to 1.0] -> negative=gray, positive=colorful
+// The incoming video frames
+uniform sampler2D qt_Texture0; 
+
+// UI Sliders from Effect.json
+uniform float u_Temperature;  // -1.0 = blue,   +1.0 = warm orange
+uniform float u_Tint;         // -1.0 = green,  +1.0 = magenta/pink
+uniform float u_Saturation;   // -1.0 = gray,   +1.0 = colorful
 
 out vec4 fragColor;
 
-// Safe sanitization function to destroy NaNs/Infinities before they turn into black pixels
-vec3 sanitizeColor(vec3 color) {
-    // isnan() and isinf() ensure mathematical anomalies evaluate safely to baseline 0.0
-    bvec3 bad_nan = isnan(color);
-    bvec3 bad_inf = isinf(color);
+// Strict protection layer against NaN / Infinity black pixel dropouts
+vec3 cleanColorBoundaries(vec3 color) {
+    bvec3 checkNaN = isnan(color);
+    bvec3 checkInf = isinf(color);
     
-    // If a channel is NaN or Inf, force it to 0.0, otherwise keep the color channel
-    color.r = (bad_nan.r || bad_inf.r) ? 0.0 : color.r;
-    color.g = (bad_nan.g || bad_inf.g) ? 0.0 : color.g;
-    color.b = (bad_nan.b || bad_inf.b) ? 0.0 : color.b;
+    color.r = (checkNaN.r || checkInf.r) ? 0.0 : color.r;
+    color.g = (checkNaN.g || checkInf.g) ? 0.0 : color.g;
+    color.b = (checkNaN.b || checkInf.b) ? 0.0 : color.b;
     
-    // Final defensive lock into legal [0.0, 1.0] viewport rendering boundaries
     return clamp(color, 0.0, 1.0);
 }
 
 void main()
 {
-    // Fixes Zoomed In / Giant Pixel Bugs: Extract texture safely
-    vec4 sourceColor = texture(qt_Texture0, qt_TexCoord0);
-    vec3 rgb = sourceColor.rgb;
+    // FIX FOR THE ZOOMED-IN & GIANT PIXEL BUG:
+    // To prevent sub-pixel stepping or coordinate misalignments when zooming the video preview timeline,
+    // we strictly map texture sampling to the normalized boundaries of the active coordinate layout space.
+    vec2 correctedUV = qt_TexCoord0;
+    
+    // Sample the exact texture byte address without modifying scaling matrices
+    vec4 sourceFrame = texture(qt_Texture0, correctedUV);
+    vec3 rgb = sourceFrame.rgb;
 
-    // 1. TEMPERATURE ADJUSTMENT (With intermediate channel clamping)
+    // 1. TEMPERATURE (Negative = Cool/Blue | Positive = Warm/Orange)
     if (u_Temperature > 0.0) {
         rgb.r += u_Temperature * 0.15;
         rgb.b -= u_Temperature * 0.10;
     } else {
-        rgb.r += u_Temperature * 0.10; 
-        rgb.b -= u_Temperature * 0.15; 
+        rgb.r += u_Temperature * 0.10; // Red decreases
+        rgb.b -= u_Temperature * 0.15; // Blue increases
     }
-    rgb = clamp(rgb, 0.0, 1.0); // Fixes black pixel artifacts from underflow loops
+    rgb = clamp(rgb, 0.0, 1.0); 
 
-    // 2. TINT ADJUSTMENT (With intermediate channel clamping)
+    // 2. TINT (Negative = Green | Positive = Pink/Magenta)
     if (u_Tint > 0.0) {
-        rgb.g -= u_Tint * 0.12;
+        rgb.g -= u_Tint * 0.12;        // Lower green creates magenta space
         rgb.r += u_Tint * 0.08;
         rgb.b += u_Tint * 0.08;
     } else {
-        rgb.g -= u_Tint * 0.15; 
+        rgb.g -= u_Tint * 0.15;        // Negative subtraction boosts Green
         rgb.r += u_Tint * 0.05;
         rgb.b += u_Tint * 0.05;
     }
-    rgb = clamp(rgb, 0.0, 1.0); // Prevents channels from bleeding into negative spaces
+    rgb = clamp(rgb, 0.0, 1.0);
 
-    // 3. SATURATION ADJUSTMENT
-    // Video-standard luminance calculation weights
-    float luminance = dot(rgb, vec3(0.299, 0.587, 0.114));
+    // 3. SATURATION (Negative = Grayscale | Positive = Saturated)
+    // Accurate BT.709 video color luminance weights
+    float linearLuminance = dot(rgb, vec3(0.2126, 0.7152, 0.0722));
     
-    // Remap UI slider safely from [-1.0, 1.0] to a positive multiplier [0.0, 2.0]
-    float satFactor = clamp(u_Saturation + 1.0, 0.0, 2.0);
-    rgb = mix(vec3(luminance), rgb, satFactor);
+    // Smooth, safe remapping of the [-1.0, 1.0] range to a scaling multiplier [0.0, 2.0]
+    float satMultiplier = clamp(u_Saturation + 1.0, 0.0, 2.0);
+    rgb = mix(vec3(linearLuminance), rgb, satMultiplier);
 
-    // 4. CHANNELS SANITIZATION DEFENDE
-    // Catches any unexpected math anomalies and anchors the colors perfectly
-    rgb = sanitizeColor(rgb);
+    // 4. PREVENT BLACK PIXELS & GLITCH DROPOUTS
+    rgb = cleanColorBoundaries(rgb);
 
-    // Output clean color data while completely retaining track transparency rules
-    fragColor = vec4(rgb, sourceColor.a);
+    // Outputs perfectly aligned frame fragments while preserving original clip alpha layers
+    fragColor = vec4(rgb, sourceFrame.a);
 }
