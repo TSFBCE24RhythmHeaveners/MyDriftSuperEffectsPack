@@ -1,0 +1,50 @@
+{
+  "id": "superpack_colorchange",
+  "displayName": "SuperPack Colour Changer",
+  "category": "color",
+  "order": 37393000002,
+  "backend": "gpu",
+  "pipeline": {
+    "intermediateBuffers": [],
+    "passes": [
+      {
+        "passIndex": 0,
+        "fragmentShader": "main.frag",
+        "inputs": [
+          {
+            "type": "source_texture"
+          }
+        ],
+        "output": {
+          "type": "canvas"
+        }
+      }
+    ]
+  }
+  "parameters": [
+    {
+      "identifier": "u_Temperature",
+      "displayName": "Temperature",
+      "type": "float",
+      "minValue": -1.0,
+      "maxValue": 1.0,
+      "defaultValue": 0.0,
+    },
+    {
+      "identifier": "u_Tint",
+      "displayName": "Tint",
+      "type": "float",
+      "minValue": -1.0,
+      "maxValue": 1.0,
+      "defaultValue": 0.0,
+    },
+    {
+      "identifier": "u_Saturation",
+      "displayName": "Saturation",
+      "type": "float",
+      "minValue": -1.0,
+      "maxValue": 1.0,
+      "defaultValue": 0.0,
+    }
+  ],
+}
