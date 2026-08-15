@@ -67,6 +67,14 @@
       "defaultValue": 0.0,
       "minValue": 0,
       "maxValue": 1
+    },
+    {
+      "id": "u_edge_wrap",
+      "name": "Wrap",
+      "type": "bool",
+      "defaultValue": 0.0,
+      "minValue": 0,
+      "maxValue": 1
     }
   ],
   "backend": "gpu",
