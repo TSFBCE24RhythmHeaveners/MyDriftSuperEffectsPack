@@ -5,6 +5,12 @@
   "order": 37393000006,
   "parameters": [
     {
+      "identifier": "u_resolution",
+      "displayName": "Internal Scale Matrix",
+      "type": "vec2",
+      "context": "resolution",
+      "hidden": true
+    },{
       "identifier": "brightness",
       "type": "float",
       "defaultValue": 0.0,
