@@ -5,15 +5,15 @@
   "order": 37393000006,
   "parameters": [
     {
-      "identifier": "u_brightness",
+      "identifier": "brightness",
       "type": "float",
-      "defaultValue": 1.0,
-      "minValue": 0.0,
-      "maxValue": 2.0,
+      "defaultValue": 0.0,
+      "minValue": -1.0,
+      "maxValue": 1.0,
       "displayName": "Brightness"
     },
     {
-      "identifier": "u_contrast",
+      "identifier": "contrast",
       "type": "float",
       "defaultValue": 1.0,
       "minValue": 0.0,
@@ -21,7 +21,7 @@
       "displayName": "Contrast"
     },
     {
-      "identifier": "u_saturation",
+      "identifier": "saturation",
       "type": "float",
       "defaultValue": 1.0,
       "minValue": 0.0,
@@ -29,7 +29,7 @@
       "displayName": "Saturation"
     },
     {
-      "identifier": "u_hue",
+      "identifier": "hue",
       "type": "float",
       "defaultValue": 0.0,
       "minValue": -180,
@@ -37,7 +37,7 @@
       "displayName": "Hue"
     },
     {
-      "identifier": "u_temperature",
+      "identifier": "temperature",
       "type": "float",
       "defaultValue": 0.0,
       "minValue": -1.0,
@@ -45,7 +45,7 @@
       "displayName": "Temperature"
     },
     {
-      "identifier": "u_tint",
+      "identifier": "tint",
       "type": "float",
       "defaultValue": 0.0,
       "minValue": -1.0,
