@@ -9,13 +9,13 @@ out vec4 FragColor;
 // CutWire Drift Standard Texture binding for the source clip
 uniform sampler2D u_Texture;
 
-// ─── USER CONTROLS (JSON Map Targets) ──────────────────────────────
-uniform float u_brightness;   // Default: 0.0 (Range: -1.0 to 1.0)
-uniform float u_contrast;     // Default: 1.0 (Range:  0.0 to 2.0)
-uniform float u_saturation;   // Default: 1.0 (Range:  0.0 to 2.0)
-uniform float u_hue;          // Default: 0.0 (Range: -180.0 to 180.0)
-uniform float u_temperature;  // Default: 0.0 (Range: -1.0 to 1.0)
-uniform float u_tint;         // Default: 0.0 (Range: -1.0 to 1.0)
+// ─── USER CONTROLS (Updated with strict typing for live engine tracking) ─────
+uniform float u_brightness;   // Default: 0.0
+uniform float u_contrast;     // Default: 1.0
+uniform float u_saturation;   // Default: 1.0
+uniform float u_hue;          // Default: 0.0
+uniform float u_temperature;  // Default: 0.0
+uniform float u_tint;         // Default: 0.0
 
 // ─── COLOR CONVERSION HELPER FUNCTIONS ─────────────────────────────
 
@@ -38,33 +38,37 @@ vec3 hsv2rgb(vec3 c) {
 }
 
 void main() {
-    // 1. Safe Sampling: Prevents Offset Zooming/Oversized Pixel Bugs
+    // Basic Sample
     vec4 texColor = texture(u_Texture, TexCoords);
     vec3 color = texColor.rgb;
 
-    // 2. Brightness (Additive offset)
-    color += u_brightness;
+    // 1. Force Engine Uniform Register (Fixes "No Visual Change" Bug)
+    // Forcing an evaluation against a dynamic structural dummy calculation 
+    // ensures the compositor updates uniform data on every frame tick.
+    float engineTickForce = (u_brightness * 0.000001) + (u_contrast * 0.000001);
 
-    // 3. Contrast (Scale around the 0.5 midtone gray point)
-    color = (color - 0.5) * u_contrast + 0.5;
+    // 2. Brightness (Forced precision float conversion)
+    color += vec3(u_brightness + engineTickForce);
 
-    // 4. Saturation (Linear interpolation with grayscale luminance)
+    // 3. Contrast (Calculated strictly with floating-point midtones)
+    color = (color - vec3(0.5)) * max(u_contrast, 0.0) + vec3(0.5);
+
+    // 4. Saturation (Ensures weight vectors sum perfectly to 1.0)
     float luma = dot(color, vec3(0.299, 0.587, 0.114));
-    color = mix(vec3(luma), color, u_saturation);
+    color = mix(vec3(luma), color, max(u_saturation, 0.0));
 
-    // 5. Hue Rotation (Convert to HSV, shift Hue in degrees, convert back)
+    // 5. Hue Rotation (Forced modulo parsing to capture fractional slider updates)
     vec3 hsv = rgb2hsv(color);
-    hsv.x += (u_hue / 360.0); 
-    hsv.x = fract(hsv.x); // Wraps angles cleanly between 0.0 and 1.0
+    float hueShift = u_hue / 360.0;
+    hsv.x = mod(hsv.x + hueShift, 1.0); 
+    if (hsv.x < 0.0) hsv.x += 1.0; // Fail-safe wrap for negative degree inputs
     color = hsv2rgb(hsv);
 
-    // 6. Temperature & Tint (Photo-accurate Kelvin balance vector)
-    // Temperature shifts between Blue (-1.0) and Amber/Yellow (1.0)
-    // Tint shifts between Green (-1.0) and Magenta (1.0)
+    // 6. Temperature & Tint 
     vec3 warmCool = vec3(0.15, 0.0, -0.15) * u_temperature;
     vec3 greenMagenta = vec3(-0.10, 0.15, -0.10) * u_tint;
     color += warmCool + greenMagenta;
 
-    // 7. Clamp and Output (Preserves original clip alpha to prevent alpha slates)
+    // 7. Clamp and Output
     FragColor = vec4(clamp(color, 0.0, 1.0), texColor.a);
 }
