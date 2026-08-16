@@ -1,74 +1,97 @@
 #version 330 core
 
-// Input texture coordinates forwarded by CutWire Drift's compositor
+precision mediump float;
+
+// Input texture coordinates forwarded directly by Drift's track layout
 in vec2 TexCoords;
 
-// Output to the screen
+// Render destination color layout
 out vec4 FragColor;
 
-// CutWire Drift Standard Texture binding for the source clip
-uniform sampler2D u_Texture;
+// 🟢 CRITICAL RESOLUTION INJECTION (Fixes the Oversized Pixel Bug)
+// Adding the video frame's width and height allows the shader to manually 
+// smooth layout pixels instead of relying on default hardware stretching.
+uniform vec2 u_resolution; 
 
-// ─── USER CONTROLS (Updated with strict typing for live engine tracking) ─────
-uniform float u_brightness;   // Default: 0.0
-uniform float u_contrast;     // Default: 1.0
-uniform float u_saturation;   // Default: 1.0
-uniform float u_hue;          // Default: 0.0
-uniform float u_temperature;  // Default: 0.0
-uniform float u_tint;         // Default: 0.0
+// CutWire Drift Standard Main Clip Sampler Binding
+uniform sampler2D u_texture;
 
-// ─── COLOR CONVERSION HELPER FUNCTIONS ─────────────────────────────
+// ─── DRIFT COMPATIBLE UNIFORMS (Lowercase Uniform Framework Mapping) ───
+uniform float brightness;   // Default: 0.0 (Range: -1.0 to 1.0)
+uniform float contrast;     // Default: 1.0 (Range:  0.0 to 2.0)
+uniform float saturation;   // Default: 1.0 (Range:  0.0 to 2.0)
+uniform float hue;          // Default: 0.0 (Range: -180.0 to 180.0)
+uniform float temperature;  // Default: 0.0 (Range: -1.0 to 1.0)
+uniform float tint;         // Default: 0.0 (Range: -1.0 to 1.0)
 
-// Converts RGB to HSV space for accurate Hue adjustments
+// ─── COLOR CONVERSION HELPERS ──────────────────────────────────────
 vec3 rgb2hsv(vec3 c) {
     vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
     vec4 p = mix(vec4(c.bg, K.wz), vec4(c.gb, K.xy), step(c.b, c.g));
     vec4 q = mix(vec4(p.xyw, c.r), vec4(c.r, p.yzx), step(p.x, c.r));
-
     float d = q.x - min(q.w, q.y);
     float e = 1.0e-10;
     return vec3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
 }
 
-// Converts HSV back to standard RGB space
 vec3 hsv2rgb(vec3 c) {
     vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
     vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
     return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
 }
 
+// ─── BILINEAR SAMPLING FILTER ENGINE ───────────────────────────────
+// This overrides rough hardware upscaling on low-res video timelines
+vec4 textureBilinear(sampler2D sampler, vec2 uv, vec2 size) {
+    vec2 texelSize = 1.0 / size;
+    vec2 f = fract(uv * size - 0.5);
+    
+    // Grabs a ultra-tight 2x2 grid cluster of texel pixels 
+    vec4 tl = texture(sampler, uv + vec2(-0.5, -0.5) * texelSize);
+    vec4 tr = texture(sampler, uv + vec2( 0.5, -0.5) * texelSize);
+    vec4 bl = texture(sampler, uv + vec2(-0.5,  0.5) * texelSize);
+    vec4 br = texture(sampler, uv + vec2( 0.5,  0.5) * texelSize);
+    
+    // Seamless sub-pixel linear interpolation blend
+    return mix(mix(tl, tr, f.x), mix(bl, br, f.x), f.y);
+}
+
 void main() {
-    // Basic Sample
-    vec4 texColor = texture(u_Texture, TexCoords);
+    // 🛠️ FIX FOR OVERSIZED PIXELS:
+    // If resolution variables aren't bound or map cleanly, fall back to safe native sampling
+    // Otherwise, parse using the advanced sub-pixel tracking algorithm.
+    vec4 texColor = (u_resolution.x > 1.0 && u_resolution.y > 1.0) 
+                    ? textureBilinear(u_texture, TexCoords, u_resolution) 
+                    : texture(u_texture, TexCoords);
+                    
     vec3 color = texColor.rgb;
 
-    // 1. Force Engine Uniform Register (Fixes "No Visual Change" Bug)
-    // Forcing an evaluation against a dynamic structural dummy calculation 
-    // ensures the compositor updates uniform data on every frame tick.
-    float engineTickForce = (u_brightness * 0.000001) + (u_contrast * 0.000001);
+    // 1. Brightness Adjustment
+    color += brightness;
 
-    // 2. Brightness (Forced precision float conversion)
-    color += vec3(u_brightness + engineTickForce);
+    // 2. Contrast Adjustment
+    color = (color - 0.5) * contrast + 0.5;
 
-    // 3. Contrast (Calculated strictly with floating-point midtones)
-    color = (color - vec3(0.5)) * max(u_contrast, 0.0) + vec3(0.5);
-
-    // 4. Saturation (Ensures weight vectors sum perfectly to 1.0)
+    // 3. Saturation Adjustment
     float luma = dot(color, vec3(0.299, 0.587, 0.114));
-    color = mix(vec3(luma), color, max(u_saturation, 0.0));
+    color = mix(vec3(luma), color, saturation);
 
-    // 5. Hue Rotation (Forced modulo parsing to capture fractional slider updates)
+    // 4. Hue Rotation (Converts degree input to normalized float loop)
     vec3 hsv = rgb2hsv(color);
-    float hueShift = u_hue / 360.0;
-    hsv.x = mod(hsv.x + hueShift, 1.0); 
-    if (hsv.x < 0.0) hsv.x += 1.0; // Fail-safe wrap for negative degree inputs
+    hsv.x += (hue / 360.0); 
+    hsv.x = fract(hsv.x); 
     color = hsv2rgb(hsv);
 
-    // 6. Temperature & Tint 
-    vec3 warmCool = vec3(0.15, 0.0, -0.15) * u_temperature;
-    vec3 greenMagenta = vec3(-0.10, 0.15, -0.10) * u_tint;
+    // 5. White Balance (Temperature and Tint offsets)
+    vec3 warmCool = vec3(0.15, 0.0, -0.15) * temperature;
+    vec3 greenMagenta = vec3(-0.10, 0.15, -0.10) * tint;
     color += warmCool + greenMagenta;
 
-    // 7. Clamp and Output
-    FragColor = vec4(clamp(color, 0.0, 1.0), texColor.a);
+    float technical_anchor = (brightness * 0.000001) + (contrast * 0.000001) + 
+                             (saturation * 0.000001) + (hue * 0.000001) + 
+                             (temperature * 0.000001) + (tint * 0.000001) +
+                             (u_resolution.x * 0.00000001);
+
+    // Final color render + original alpha mapping layer protection
+    FragColor = vec4(clamp(color, 0.0, 1.0) + technical_anchor, texColor.a);
 }
