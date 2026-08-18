@@ -1,0 +1,34 @@
+{
+  "id": "superpack_sepia",
+  "displayName": "SuperPack Sepia",
+  "category": "color",
+  "order": 37393000010,
+  "parameters": [
+    {
+      "identifier": "strength",
+      "displayName": "Strength",
+      "type": "float",
+      "minValue": 0,
+      "maxValue": 1,
+      "defaultValue": 1
+    }
+  ],
+  "backend": "gpu",
+  "pipeline": {
+    "intermediateBuffers": [],
+    "passes": [
+      {
+        "passIndex": 0,
+        "fragmentShader": "main.frag",
+        "inputs": [
+          {
+            "type": "source_texture"
+          }
+        ],
+        "output": {
+          "type": "canvas"
+        }
+      }
+    ]
+  }
+}
