@@ -25,6 +25,7 @@
       "defaultValue": "#0000ff"},
     {
       "identifier": "highlightColor",
+      "displayName": "Highlights",
       "type": "color",
       "defaultValue": "#00ffff" },
     {
