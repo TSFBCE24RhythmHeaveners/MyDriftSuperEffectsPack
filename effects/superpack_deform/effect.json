@@ -17,8 +17,8 @@
       "displayName": "Stretch X",
       "type": "float",
       "minValue": 0.1,
-      "maxValue": 5.0,
-      "defaultValue": 10.0
+      "maxValue": 10.0,
+      "defaultValue": 1.0
     },
     {
       "identifier": "u_stretch_y",
