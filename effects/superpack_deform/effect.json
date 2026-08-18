@@ -32,17 +32,17 @@
       "identifier": "u_offset_x",
       "displayName": "X Offset",
       "type": "float",
-      "minValue": 0.1,
-      "maxValue": 5.0,
-      "defaultValue": 1.0
+      "minValue": -1,
+      "maxValue": 1,
+      "defaultValue": 0
     },
     {
       "identifier": "u_offset_y",
       "displayName": "Y Offset",
       "type": "float",
-      "minValue": 0.1,
-      "maxValue": 5.0,
-      "defaultValue": 1.0
+      "minValue": -1,
+      "maxValue": 1,
+      "defaultValue": 0
     },
     {
       "identifier": "u_rotate",
