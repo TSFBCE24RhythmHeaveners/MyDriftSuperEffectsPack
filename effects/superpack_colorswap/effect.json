@@ -31,6 +31,18 @@
       "defaultValue": 0.05,
       "minValue": 0.0,
       "maxValue": 1.0
+    },
+    {
+      "id": "useLab",
+      "displayName": "Use LAB",
+      "type": "bool",
+      "defaultValue": 1
+    },
+    {
+      "id": "showMask",
+      "displayName": "Show Mask",
+      "type": "bool",
+      "defaultValue": 0
     }
   ],
   "backend": "gpu",
