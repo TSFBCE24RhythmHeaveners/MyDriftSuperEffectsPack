@@ -5,19 +5,19 @@
   "order": 37393000013,
   "parameters": [
     {
-      "identifier": "baseColor",
+      "identifier": "u_baseColor",
       "type": "color",
       "displayName": "Base color",
       "defaultValue": "#ffff00"
     },
     {
-      "identifier": "targetColor",
+      "identifier": "u_targetColor",
       "type": "color",
       "displayName": "Target color",
       "defaultValue": "#ff0000"
     },
     {
-      "identifier": "threshold",
+      "identifier": "u_threshold",
       "type": "float",
       "displayName": "Threshold",
       "defaultValue": 0.07,
@@ -25,7 +25,7 @@
       "maxValue": 1.0
     },
     {
-      "identifier": "softness",
+      "identifier": "u_softness",
       "type": "float",
       "displayName": "Softness",
       "defaultValue": 0.05,
@@ -33,13 +33,13 @@
       "maxValue": 1.0
     },
     {
-      "identifier": "useLab",
+      "identifier": "u_useLab",
       "displayName": "Use LAB",
       "type": "bool",
       "defaultValue": 1
     },
     {
-      "identifier": "showMask",
+      "identifier": "u_showMask",
       "displayName": "Show Mask",
       "type": "bool",
       "defaultValue": 0
