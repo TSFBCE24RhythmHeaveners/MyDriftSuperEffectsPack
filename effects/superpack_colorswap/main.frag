@@ -33,17 +33,17 @@ void main() {
     // Preserve alpha
     float srcA = src.a;
 
-    // Work in linear space for better perceptual distance
-    vec3 srcLinear    = srgbToLinear(src.rgb);
-    vec3 baseLinear   = srgbToLinear(u_baseColor);
-    vec3 targetLinear = srgbToLinear(u_targetColor);
+    // Work in sRGB space for distance (matches UI parameter scale)
+    vec3 srcSRGB   = src.rgb;
+    vec3 baseSRGB  = u_baseColor;
+    vec3 targetSRGB = u_targetColor;
 
     // Clamp inputs to safe ranges
     float threshold = max(u_threshold, 0.0);
     float softness  = max(u_softness, 0.0);
 
-    // Euclidean distance in linear RGB
-    float d = distance(srcLinear, baseLinear);
+    // Euclidean distance in sRGB space
+    float d = distance(srcSRGB, baseSRGB);
 
     // Build smooth transition region: match==1 where distance is small (close to base)
     float halfSoft = 0.5 * softness;
@@ -59,9 +59,8 @@ void main() {
     }
     float match = 1.0 - s; // 1 when we should fully replace, 0 when untouched
 
-    // Mix in linear space, then convert back to sRGB
-    vec3 outLinear = mix(srcLinear, targetLinear, match);
-    vec3 outSRGB = linearToSrgb(outLinear);
+    // Mix in sRGB space
+    vec3 outSRGB = mix(srcSRGB, targetSRGB, match);
 
     fragColor = vec4(outSRGB, srcA);
 }
