@@ -34,8 +34,8 @@
     "offsetG": "0.0",
     "offsetB": "0.0",
     "powerR": "1.0",
-    "powerG": "1.0"
-    "powerB": "1.0"
+    "powerG": "1.0",
+    "powerB": "1.0",
     "saturation": "1.0"
   },
   "backend": "gpu",
