@@ -14,7 +14,7 @@ out vec4 FragColor;
 uniform vec2 u_resolution; 
 
 // CutWire Drift Standard Main Clip Sampler Binding
-uniform sampler2D u_texture;
+uniform sampler2D u_currentTexture;
 
 // ─── DRIFT COMPATIBLE UNIFORMS (Lowercase Uniform Framework Mapping) ───
 uniform float brightness;   // Default: 0.0 (Range: -1.0 to 1.0)
