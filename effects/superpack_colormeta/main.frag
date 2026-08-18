@@ -1,97 +1,88 @@
 #version 330 core
 
-precision mediump float;
-
-// Input texture coordinates forwarded directly by Drift's track layout
-in vec2 TexCoords;
-
-// Render destination color layout
-out vec4 FragColor;
-
-// 🟢 CRITICAL RESOLUTION INJECTION (Fixes the Oversized Pixel Bug)
-// Adding the video frame's width and height allows the shader to manually 
-// smooth layout pixels instead of relying on default hardware stretching.
-uniform vec2 u_resolution; 
-
-// CutWire Drift Standard Main Clip Sampler Binding
+// Drift reserved inputs
 uniform sampler2D u_currentTexture;
+uniform vec2 u_resolution; // available but not required
+in vec2 v_texCoord;
+out vec4 fragColor;
 
-// ─── DRIFT COMPATIBLE UNIFORMS (Lowercase Uniform Framework Mapping) ───
-uniform float brightness;   // Default: 0.0 (Range: -1.0 to 1.0)
-uniform float contrast;     // Default: 1.0 (Range:  0.0 to 2.0)
-uniform float saturation;   // Default: 1.0 (Range:  0.0 to 2.0)
-uniform float hue;          // Default: 0.0 (Range: -180.0 to 180.0)
-uniform float temperature;  // Default: 0.0 (Range: -1.0 to 1.0)
-uniform float tint;         // Default: 0.0 (Range: -1.0 to 1.0)
+// User-facing parameters (bound by effect.json identifiers)
+uniform float brightness;   // additive: -1..1 (0 = no change)
+uniform float gamma;        // gamma: >0 (1 = no change)
+uniform float contrast;     // contrast multiplier: 0..2 (1 = no change)
+uniform float saturation;   // 0..2 (1 = no change)
+uniform float temperature;  // -1..1 (negative=cool, positive=warm)
+uniform float hue;          // degrees, -180..180 (0 = no change)
 
-// ─── COLOR CONVERSION HELPERS ──────────────────────────────────────
-vec3 rgb2hsv(vec3 c) {
-    vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
-    vec4 p = mix(vec4(c.bg, K.wz), vec4(c.gb, K.xy), step(c.b, c.g));
-    vec4 q = mix(vec4(p.xyw, c.r), vec4(c.r, p.yzx), step(p.x, c.r));
-    float d = q.x - min(q.w, q.y);
-    float e = 1.0e-10;
-    return vec3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
+// Helpers
+const vec3 LUMA = vec3(0.2126, 0.7152, 0.0722);
+
+// Rotate hue in YIQ-like space (cheap & stable)
+mat3 rgb2yiq = mat3(
+    0.299,  0.587,  0.114,
+    0.596, -0.274, -0.322,
+    0.211, -0.523,  0.312
+);
+mat3 yiq2rgb = mat3(
+    1.0,  0.956,  0.621,
+    1.0, -0.272, -0.647,
+    1.0, -1.106,  1.703
+);
+
+vec3 rotateHue(vec3 color, float angleRad) {
+    vec3 yiq = rgb2yiq * color;
+    float cs = cos(angleRad);
+    float sn = sin(angleRad);
+    mat2 rot = mat2(cs, -sn, sn, cs);
+    vec2 iq = rot * yiq.yz;
+    yiq.yz = iq;
+    return yiq2rgb * yiq;
 }
 
-vec3 hsv2rgb(vec3 c) {
-    vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
-    vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
-    return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
-}
-
-// ─── BILINEAR SAMPLING FILTER ENGINE ───────────────────────────────
-// This overrides rough hardware upscaling on low-res video timelines
-vec4 textureBilinear(sampler2D sampler, vec2 uv, vec2 size) {
-    vec2 texelSize = 1.0 / size;
-    vec2 f = fract(uv * size - 0.5);
-    
-    // Grabs a ultra-tight 2x2 grid cluster of texel pixels 
-    vec4 tl = texture(sampler, uv + vec2(-0.5, -0.5) * texelSize);
-    vec4 tr = texture(sampler, uv + vec2( 0.5, -0.5) * texelSize);
-    vec4 bl = texture(sampler, uv + vec2(-0.5,  0.5) * texelSize);
-    vec4 br = texture(sampler, uv + vec2( 0.5,  0.5) * texelSize);
-    
-    // Seamless sub-pixel linear interpolation blend
-    return mix(mix(tl, tr, f.x), mix(bl, br, f.x), f.y);
+// Temperature tweak: subtle RGB shift toward warm/cool
+vec3 applyTemperature(vec3 c, float t) {
+    // t in [-1,1], push red up and blue down for warm, opposite for cool
+    // coefficients chosen for pleasing results without clipping
+    float rShift = clamp(t * 0.1, -0.15, 0.15);
+    float bShift = clamp(-t * 0.08, -0.12, 0.12);
+    c.r = clamp(c.r + rShift, 0.0, 1.0);
+    c.b = clamp(c.b + bShift, 0.0, 1.0);
+    return c;
 }
 
 void main() {
-    // 🛠️ FIX FOR OVERSIZED PIXELS:
-    // If resolution variables aren't bound or map cleanly, fall back to safe native sampling
-    // Otherwise, parse using the advanced sub-pixel tracking algorithm.
-    vec4 texColor = (u_resolution.x > 1.0 && u_resolution.y > 1.0) 
-                    ? textureBilinear(u_texture, TexCoords, u_resolution) 
-                    : texture(u_texture, TexCoords);
-                    
-    vec3 color = texColor.rgb;
+    // Sample the source exactly at the provided texture coordinates.
+    // Do NOT manipulate v_texCoord (avoid zoom / pixelization bugs).
+    vec4 src = texture(u_currentTexture, v_texCoord);
 
-    // 1. Brightness Adjustment
-    color += brightness;
+    // quick guard against degenerate gamma:
+    float g = max(gamma, 0.0001);
 
-    // 2. Contrast Adjustment
-    color = (color - 0.5) * contrast + 0.5;
+    vec3 col = src.rgb;
 
-    // 3. Saturation Adjustment
-    float luma = dot(color, vec3(0.299, 0.587, 0.114));
-    color = mix(vec3(luma), color, saturation);
+    // Brightness: simple additive offset (safe)
+    col += brightness;
 
-    // 4. Hue Rotation (Converts degree input to normalized float loop)
-    vec3 hsv = rgb2hsv(color);
-    hsv.x += (hue / 360.0); 
-    hsv.x = fract(hsv.x); 
-    color = hsv2rgb(hsv);
+    // Contrast: scale about 0.5 (neutral mid point)
+    // contrast = 1.0 -> unchanged; <1 reduces contrast; >1 increases
+    col = (col - 0.5) * contrast + 0.5;
 
-    // 5. White Balance (Temperature and Tint offsets)
-    vec3 warmCool = vec3(0.15, 0.0, -0.15) * temperature;
-    vec3 greenMagenta = vec3(-0.10, 0.15, -0.10) * tint;
-    color += warmCool + greenMagenta;
+    // Saturation: interpolate between luminance and color
+    float lum = dot(col, LUMA);
+    col = mix(vec3(lum), col, saturation);
 
-    float technical_anchor = (brightness * 0.000001) + (contrast * 0.000001) + 
-                             (saturation * 0.000001) + (hue * 0.000001) + 
-                             (temperature * 0.000001) + (tint * 0.000001) +
-                             (u_resolution.x * 0.00000001);
+    // Temperature: gentle RGB bias
+    col = applyTemperature(col, temperature);
 
-    // Final color render + original alpha mapping layer protection
-    FragColor = vec4(clamp(color, 0.0, 1.0) + technical_anchor, texColor.a);
+    // Hue: rotate chroma in YIQ-like space
+    float angle = radians(hue);
+    col = rotateHue(col, angle);
+
+    // Gamma: final nonlinear stretch (affects midtones)
+    col = pow(clamp(col, 0.0, 1.0), vec3(1.0 / g));
+
+    // Ensure final color remains in valid range
+    col = clamp(col, 0.0, 1.0);
+
+    fragColor = vec4(col, src.a);
 }
