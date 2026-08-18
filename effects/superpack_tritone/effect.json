@@ -5,7 +5,7 @@
   "order": 37393000012,
   "parameters": [
     {
-      "id": "strength",
+      "identifier": "strength",
       "displayName": "Strength",
       "type": "float",
       "defaultValue": 1.0,
@@ -13,22 +13,22 @@
       "maxValue": 1.0
     },
     {
-      "id": "shadowColor",
+      "identifier": "shadowColor",
       "displayName": "Shadows",
       "type": "color",
       "defaultValue": "#ffffff"
     },
     {
-      "id": "midtoneColor",
-      "displayName": "Midtones",
+      "identifier": "midentifiertoneColor",
+      "displayName": "Midentifiertones",
       "type": "color",
       "defaultValue": "#0000ff"},
     {
-      "id": "highlightColor",
+      "identifier": "highlightColor",
       "type": "color",
       "defaultValue": "#00ffff" },
     {
-      "id": "contrast",
+      "identifier": "contrast",
       "displayName": "Contrast",
       "type": "float",
       "defaultValue": 1.0,
