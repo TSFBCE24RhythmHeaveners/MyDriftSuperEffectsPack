@@ -33,13 +33,13 @@
       "maxValue": 1.0
     },
     {
-      "id": "useLab",
+      "identifier": "useLab",
       "displayName": "Use LAB",
       "type": "bool",
       "defaultValue": 1
     },
     {
-      "id": "showMask",
+      "identifier": "showMask",
       "displayName": "Show Mask",
       "type": "bool",
       "defaultValue": 0
