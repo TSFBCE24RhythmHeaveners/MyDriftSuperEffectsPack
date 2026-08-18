@@ -1,6 +1,7 @@
 #version 330 core
 in vec2 v_texCoord; out vec4 fragColor;
 uniform sampler2D u_currentTexture;
+uniform float strength;
 void main() {
     vec4 src = texture(u_currentTexture, v_texCoord);
     float s = clamp(strength, 0.0, 1.0);
