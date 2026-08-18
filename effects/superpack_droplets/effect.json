@@ -1,0 +1,66 @@
+{
+  "id": "superpack_droplets",
+  "displayName": "SuperPack Ripples",
+  "category": "glitch",
+  "order": 360,
+  "parameters": [
+    {
+      "identifier": "amplitude",
+      "displayName": "Amplitude",
+      "type": "float",
+      "minValue": 0,
+      "maxValue": 64,
+      "defaultValue": 30
+    },
+    {
+      "identifier": "frequency",
+      "displayName": "Frequency",
+      "type": "float",
+      "minValue": 0,
+      "maxValue": 64,
+      "defaultValue": 3
+    },
+    {
+      "identifier": "speed",
+      "displayName": "Speed",
+      "type": "float",
+      "minValue": -10,
+      "maxValue": 10,
+      "defaultValue": -1
+    },
+    {
+      "identifier": "centerX",
+      "displayName": "Center X",
+      "type": "float",
+      "minValue": 0,
+      "maxValue": 1,
+      "defaultValue": 0.5
+    },
+    {
+      "identifier": "centerY",
+      "displayName": "Center Y",
+      "type": "float",
+      "minValue": 0,
+      "maxValue": 1,
+      "defaultValue": 0.5
+    }
+  ],
+  "backend": "gpu",
+  "pipeline": {
+    "intermediateBuffers": [],
+    "passes": [
+      {
+        "passIndex": 0,
+        "fragmentShader": "main.frag",
+        "inputs": [
+          {
+            "type": "source_texture"
+          }
+        ],
+        "output": {
+          "type": "canvas"
+        }
+      }
+    ]
+  }
+}
