@@ -15,5 +15,6 @@ void main() {
         float l0 = dot(c.rgb, vec3(0.2126, 0.7152, 0.0722));
         float l1 = dot(tinted, vec3(0.2126, 0.7152, 0.0722));
         tinted *= (l1 > 1e-5) ? (l0 / l1) : 1.0;
+    }
     fragColor = vec4(clamp(tinted, 0.0, 1.0), c.a);
 }
