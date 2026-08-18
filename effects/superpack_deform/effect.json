@@ -46,7 +46,7 @@
     },
     {
       "identifier": "u_rotate",
-      "displayName": "Rotate (Degrees)",
+      "displayName": "Rotate",
       "type": "float",
       "minValue": -180.0,
       "maxValue": 180.0,
