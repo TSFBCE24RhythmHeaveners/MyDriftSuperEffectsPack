@@ -5,28 +5,44 @@
   "order": 37393000002,
   "parameters": [
     {
-      "identifier": "u_temperature",
-      "displayName": "Temperature",
+      "identifier": "tintR",
+      "displayName": "Tint R",
       "type": "float",
-      "minValue": -1.0,
-      "maxValue": 1.0,
-      "defaultValue": 0.0
+      "defaultValue": 0.4,
+      "minValue": 0.0,
+      "maxValue": 1.0
     },
     {
-      "identifier": "u_tint",
-      "displayName": "Tint",
+      "identifier": "tintG",
+      "displayName": "Tint G",
       "type": "float",
-      "minValue": -1.0,
-      "maxValue": 1.0,
-      "defaultValue": 0.0
+      "defaultValue": 0.53,
+      "minValue": 0.0,
+      "maxValue": 1.0
     },
     {
-      "identifier": "u_saturation",
-      "displayName": "Saturation",
+      "identifier": "tintB",
+      "displayName": "Tint B",
       "type": "float",
-      "minValue": -1.0,
-      "maxValue": 1.0,
-      "defaultValue": 0.0
+      "defaultValue": 1.0,
+      "minValue": 0.0,
+      "maxValue": 1.0
+    },
+    {
+      "identifier": "strength",
+      "displayName": "Strength",
+      "type": "float",
+      "defaultValue": 0.35,
+      "minValue": 0.0,
+      "maxValue": 1.0
+    },
+    {
+      "identifier": "preserveLuma",
+      "displayName": "Preserve Luma",
+      "type": "float",
+      "defaultValue": 1.0,
+      "minValue": 0,
+      "maxValue": 2
     }
   ],
   "backend": "gpu",
