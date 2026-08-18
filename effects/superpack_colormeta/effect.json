@@ -5,18 +5,20 @@
   "order": 37393000006,
   "parameters": [
     {
-      "identifier": "u_resolution",
-      "displayName": "Internal Scale Matrix",
-      "type": "vec2",
-      "context": "resolution",
-      "hidden": true
-    },{
       "identifier": "brightness",
       "type": "float",
       "defaultValue": 0.0,
       "minValue": -1.0,
       "maxValue": 1.0,
       "displayName": "Brightness"
+    },
+    {
+      "identifier": "gamma",
+      "type": "float",
+      "defaultValue": 0.0,
+      "minValue": -1.0,
+      "maxValue": 1.0,
+      "displayName": "Gamma"
     },
     {
       "identifier": "contrast",
@@ -49,14 +51,6 @@
       "minValue": -1.0,
       "maxValue": 1.0,
       "displayName": "Temperature"
-    },
-    {
-      "identifier": "tint",
-      "type": "float",
-      "defaultValue": 0.0,
-      "minValue": -1.0,
-      "maxValue": 1.0,
-      "displayName": "Tint"
     }
   ],
   "backend": "gpu",
