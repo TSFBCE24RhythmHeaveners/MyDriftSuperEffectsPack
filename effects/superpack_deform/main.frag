@@ -14,6 +14,8 @@ uniform float u_stretch_y;
 uniform float u_rotate;
 uniform float u_skew_x;
 uniform float u_skew_y;
+uniform float u_offset_x;
+uniform float u_offset_y;
 uniform bool u_flip_h;
 uniform bool u_flip_v;
 uniform bool u_edge_wrap;
@@ -54,10 +56,13 @@ void main() {
     vec2 scale = vec2(u_stretch_x, u_stretch_y) * u_zoom;
     uv /= scale;
 
-    // 9. Reposition coordinates back into the original texture canvas space [0.0, 1.0]
+    // 9. Apply offset transformations (after scaling to maintain offset consistency)
+    uv += vec2(u_offset_x, u_offset_y);
+
+    // 10. Reposition coordinates back into the original texture canvas space [0.0, 1.0]
     uv += vec2(0.5);
 
-    // 10. Handle Boundary Conditions
+    // 11. Handle Boundary Conditions
     if (u_edge_wrap) {
         // Fract forces coordinates to wrap perfectly between 0.0 and 1.0 (Tiling)
         // This solves the giant pixel bug by avoiding clamping hardware states entirely
