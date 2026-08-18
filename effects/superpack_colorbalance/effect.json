@@ -38,11 +38,11 @@
     },
     {
       "identifier": "preserveLuma",
-      "displayName": "Mode",
-      "type": "float",
+      "displayName": "Preserve Luminance",
+      "type": "bool",
       "defaultValue": 1.0,
       "minValue": 0,
-      "maxValue": 2
+      "maxValue": 1
     }
   ],
   "backend": "gpu",
