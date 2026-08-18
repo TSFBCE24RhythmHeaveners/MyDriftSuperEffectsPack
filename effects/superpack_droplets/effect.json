@@ -2,7 +2,7 @@
   "id": "superpack_droplets",
   "displayName": "SuperPack Ripples",
   "category": "glitch",
-  "order": 360,
+  "order": 37393000011,
   "parameters": [
     {
       "identifier": "amplitude",
