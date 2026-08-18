@@ -19,8 +19,8 @@
       "defaultValue": "#ffffff"
     },
     {
-      "identifier": "midentifiertoneColor",
-      "displayName": "Midentifiertones",
+      "identifier": "midtoneColor",
+      "displayName": "Midtones",
       "type": "color",
       "defaultValue": "#0000ff"},
     {
