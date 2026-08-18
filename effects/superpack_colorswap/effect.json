@@ -12,8 +12,9 @@
     },
     {
       "id": "targetColor",
-      "type": "color", "displayName":
-      "Target color", "defaultValue": "#ff0000"
+      "type": "color",
+      "displayName": "Target color",
+      "defaultValue": "#ff0000"
     },
     {
       "id": "threshold",
