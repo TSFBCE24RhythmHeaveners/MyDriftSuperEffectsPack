@@ -1,0 +1,31 @@
+{
+  "id": "superpack_tritone",
+  "displayName": "SuperPack Tritone",
+  "category": "color",
+  "order": 37393000012,
+  "parameters": [
+    { "id": "strength", "type": "float", "defaultValue": 1.0, "minValue": 0.0, "maxValue": 1.0 },
+    { "id": "shadowColor", "type": "color", "defaultValue": "#ffffff" },
+    { "id": "midtoneColor", "type": "color", "defaultValue": "#0000ff" },
+    { "id": "highlightColor", "type": "color", "defaultValue": "#00ffff" },
+    { "id": "contrast", "type": "float", "defaultValue": 1.0, "minValue": 0.0, "maxValue": 3.0 }
+  ],
+  "backend": "gpu",
+  "pipeline": {
+    "intermediateBuffers": [],
+    "passes": [
+      {
+        "passIndex": 0,
+        "fragmentShader": "main.frag",
+        "inputs": [
+          {
+            "type": "source_texture"
+          }
+        ],
+        "output": {
+          "type": "canvas"
+        }
+      }
+    ]
+  }
+}
