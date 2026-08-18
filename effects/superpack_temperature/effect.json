@@ -1,0 +1,34 @@
+{
+  "id": "superpack_temperature",
+  "displayName": "SuperPack Temperature",
+  "category": "color",
+  "order": 37393000009,
+  "parameters": [
+    {
+      "identifier": "temperature",
+      "displayName": "Kelvin",
+      "type": "float",
+      "minValue": 3000,
+      "maxValue": 10000,
+      "defaultValue": 6500
+    }
+  ],
+  "backend": "gpu",
+  "pipeline": {
+    "intermediateBuffers": [],
+    "passes": [
+      {
+        "passIndex": 0,
+        "fragmentShader": "main.frag",
+        "inputs": [
+          {
+            "type": "source_texture"
+          }
+        ],
+        "output": {
+          "type": "canvas"
+        }
+      }
+    ]
+  }
+}
