@@ -1,50 +1,43 @@
 {
-  "id": "superpack_colorbalance",
-  "displayName": "SuperPack Colour Balance",
+  "id": "superpack_colorbright",
+  "displayName": "SuperPack Colour Brightness",
   "category": "color",
   "order": 37393000002,
   "parameters": [
     {
-      "identifier": "tintR",
-      "displayName": "Tint R",
-      "type": "float",
-      "defaultValue": 0.4,
-      "minValue": 0.0,
-      "maxValue": 1.0
-    },
-    {
-      "identifier": "tintG",
-      "displayName": "Tint G",
-      "type": "float",
-      "defaultValue": 0.53,
-      "minValue": 0.0,
-      "maxValue": 1.0
-    },
-    {
-      "identifier": "tintB",
-      "displayName": "Tint B",
-      "type": "float",
-      "defaultValue": 1.0,
-      "minValue": 0.0,
-      "maxValue": 1.0
-    },
-    {
-      "identifier": "strength",
-      "displayName": "Strength",
-      "type": "float",
-      "defaultValue": 0.35,
-      "minValue": 0.0,
-      "maxValue": 1.0
-    },
-    {
-      "identifier": "preserveLuma",
-      "displayName": "Mode",
+      "identifier": "slopeR",
+      "displayName": "Red Brightness",
       "type": "float",
       "defaultValue": 1.0,
       "minValue": 0,
-      "maxValue": 3
+      "maxValue": 4
+    },
+    {
+      "identifier": "slopeG",
+      "displayName": "Green Brightness",
+      "type": "float",
+      "defaultValue": 1.0,
+      "minValue": 0,
+      "maxValue": 4
+    },
+    {
+      "identifier": "slopeB",
+      "displayName": "Blue Brightness",
+      "type": "float",
+      "defaultValue": 1.0,
+      "minValue": 0,
+      "maxValue": 4
     }
   ],
+  "fixedParams": {
+    "offsetR": "0.0",
+    "offsetG": "0.0",
+    "offsetB": "0.0",
+    "powerR": "1.0",
+    "powerG": "1.0"
+    "powerB": "1.0"
+    "saturation": "1.0"
+  },
   "backend": "gpu",
   "pipeline": {
     "intermediateBuffers": [],
