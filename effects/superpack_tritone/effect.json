@@ -4,11 +4,37 @@
   "category": "color",
   "order": 37393000012,
   "parameters": [
-    { "id": "strength", "type": "float", "defaultValue": 1.0, "minValue": 0.0, "maxValue": 1.0 },
-    { "id": "shadowColor", "type": "color", "defaultValue": "#ffffff" },
-    { "id": "midtoneColor", "type": "color", "defaultValue": "#0000ff" },
-    { "id": "highlightColor", "type": "color", "defaultValue": "#00ffff" },
-    { "id": "contrast", "type": "float", "defaultValue": 1.0, "minValue": 0.0, "maxValue": 3.0 }
+    {
+      "id": "strength",
+      "displayName": "Strength",
+      "type": "float",
+      "defaultValue": 1.0,
+      "minValue": 0.0,
+      "maxValue": 1.0
+    },
+    {
+      "id": "shadowColor",
+      "displayName": "Shadows",
+      "type": "color",
+      "defaultValue": "#ffffff"
+    },
+    {
+      "id": "midtoneColor",
+      "displayName": "Midtones",
+      "type": "color",
+      "defaultValue": "#0000ff"},
+    {
+      "id": "highlightColor",
+      "type": "color",
+      "defaultValue": "#00ffff" },
+    {
+      "id": "contrast",
+      "displayName": "Contrast",
+      "type": "float",
+      "defaultValue": 1.0,
+      "minValue": 0.0,
+      "maxValue": 3.0
+    }
   ],
   "backend": "gpu",
   "pipeline": {
