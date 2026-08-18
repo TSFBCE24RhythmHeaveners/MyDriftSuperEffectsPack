@@ -6,51 +6,51 @@
   "parameters": [
     {
       "identifier": "brightness",
+      "displayName": "Brightness",
       "type": "float",
-      "defaultValue": 0.0,
-      "minValue": -1.0,
-      "maxValue": 1.0,
-      "displayName": "Brightness"
+      "minValue": -1,
+      "maxValue": 1,
+      "defaultValue": 0
     },
     {
       "identifier": "gamma",
+      "displayName": "Gamma",
       "type": "float",
-      "defaultValue": 0.0,
-      "minValue": -1.0,
-      "maxValue": 1.0,
-      "displayName": "Gamma"
+      "minValue": 0.1,
+      "maxValue": 4.0,
+      "defaultValue": 1.0
     },
     {
       "identifier": "contrast",
+      "displayName": "Contrast",
       "type": "float",
-      "defaultValue": 1.0,
       "minValue": 0.0,
       "maxValue": 2.0,
-      "displayName": "Contrast"
+      "defaultValue": 1.0
     },
     {
       "identifier": "saturation",
+      "displayName": "Saturation",
       "type": "float",
-      "defaultValue": 1.0,
       "minValue": 0.0,
-      "maxValue": 3.0,
-      "displayName": "Saturation"
-    },
-    {
-      "identifier": "hue",
-      "type": "float",
-      "defaultValue": 0.0,
-      "minValue": -180,
-      "maxValue": 180,
-      "displayName": "Hue"
+      "maxValue": 2.0,
+      "defaultValue": 1.0
     },
     {
       "identifier": "temperature",
+      "displayName": "Temperature",
       "type": "float",
-      "defaultValue": 0.0,
       "minValue": -1.0,
       "maxValue": 1.0,
-      "displayName": "Temperature"
+      "defaultValue": 0.0
+    },
+    {
+      "identifier": "hue",
+      "displayName": "Hue",
+      "type": "float",
+      "minValue": -180,
+      "maxValue": 180,
+      "defaultValue": 0
     }
   ],
   "backend": "gpu",
