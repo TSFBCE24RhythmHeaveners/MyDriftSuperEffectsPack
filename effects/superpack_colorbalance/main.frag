@@ -7,13 +7,17 @@ void main() {
     vec4 c = texture(u_currentTexture, v_texCoord);
     vec3 color = vec3(tintR, tintG, tintB);
     vec3 tinted = mix(c.rgb, c.rgb * color, clamp(strength, 0.0, 1.0));
-    if (preserveLuma > 0.5 && preserveLuma < 1.5) {
-        float l0 = dot(c.rgb, vec3(0.5, 0.5, 0.5));
-        float l1 = dot(tinted, vec3(0.5, 0.5, 0.5));
+    if (preserveLuma >= 0.5 && preserveLuma < 1.5) {
+        float l0 = dot(c.rgb, vec3(0.6667, 0.6667, 0.6667));
+        float l1 = dot(tinted, vec3(0.6667, 0.6667, 0.6667));
         tinted *= (l1 > 1e-5) ? (l0 / l1) : 1.0;
-    } else if (preserveLuma > 1.5) {
+    } else if (preserveLuma >= 1.5 && preserveLuma < 2.5) {
         float l0 = dot(c.rgb, vec3(0.2126, 0.7152, 0.0722));
         float l1 = dot(tinted, vec3(0.2126, 0.7152, 0.0722));
+        tinted *= (l1 > 1e-5) ? (l0 / l1) : 1.0;
+    } else if (preserveLuma >= 2.5) {
+        float l0 = dot(c.rgb, vec3(1, 1, 1));
+        float l1 = dot(tinted, vec3(1, 1, 1));
         tinted *= (l1 > 1e-5) ? (l0 / l1) : 1.0;
     }
     fragColor = vec4(clamp(tinted, 0.0, 1.0), c.a);
