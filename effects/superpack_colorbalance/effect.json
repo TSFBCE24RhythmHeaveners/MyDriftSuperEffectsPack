@@ -38,7 +38,7 @@
     },
     {
       "identifier": "preserveLuma",
-      "displayName": "Preserve Luma",
+      "displayName": "Mode",
       "type": "float",
       "defaultValue": 1.0,
       "minValue": 0,
