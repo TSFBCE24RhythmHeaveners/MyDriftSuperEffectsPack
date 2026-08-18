@@ -1,66 +1,65 @@
 #version 330 core
-// Drift expects: u_currentTexture, u_resolution, etc.
-// Parameters from effect.json should bind to uniforms named below:
-//   baseColor (color) -> uniform vec3 u_baseColor (sRGB, 0..1)
-//   targetColor (color) -> uniform vec3 u_targetColor (sRGB, 0..1)
-//   threshold (float) -> uniform float u_threshold (0..1)
-//   softness (float) -> uniform float u_softness (0..1)
+// Drift: v_texCoord, u_currentTexture, u_resolution, etc. are provided by the host.
+// Parameter uniforms (from effect.json) expected here:
+//
+//   uniform vec3 u_baseColor;    // color parameter #rrggbb as vec3 (0..1) - sRGB
+//   uniform vec3 u_targetColor;  // color parameter #rrggbb as vec3 (0..1) - sRGB
+//   uniform float u_threshold;   // 0..1 (mapped to perceptual DeltaE by *100 internally)
+//   uniform float u_softness;    // 0..1 transition width (normalized)
+//   uniform float u_useLab;      // 0.0 = use linear-RGB distance, >0.5 = use Lab DeltaE
+//   uniform float u_showMask;    // 0.0 show normal result; 1.0 output mask for debugging
+//
+// Notes:
+// - When u_useLab > 0.5: threshold is interpreted as DeltaE/100 (so threshold=0.07 ≈ DeltaE 7).
+// - If you see "no change", enable u_showMask to visualize the matched pixels.
 
 in vec2 v_texCoord;
 out vec4 fragColor;
 
 uniform sampler2D u_currentTexture;
-uniform vec3 u_baseColor;    // #rrggbb as vec3(0..1)
-uniform vec3 u_targetColor;  // #rrggbb as vec3(0..1)
-uniform float u_threshold;   // distance at which color is considered matching (0..~1)
-uniform float u_softness;    // width of transition (0 -> hard edge)
 
-//
-// Helpers: sRGB <-> linear (approx)
-vec3 srgbToLinear(vec3 c) {
-    // approximate gamma -> linear
-    return pow(c, vec3(2.2));
+uniform vec3 u_baseColor;
+uniform vec3 u_targetColor;
+uniform float u_threshold;
+uniform float u_softness;
+uniform float u_useLab;
+uniform float u_showMask;
+
+// sRGB <-> linear approximations
+vec3 srgbToLinear(vec3 c) { return pow(clamp(c, 0.0, 1.0), vec3(2.2)); }
+vec3 linearToSrgb(vec3 c) { return pow(max(c, vec3(0.0)), vec3(1.0 / 2.2)); }
+
+// RGB linear -> XYZ (D65)
+vec3 linearRGBToXYZ(vec3 r) {
+    const mat3 M = mat3(
+        0.4124564, 0.3575761, 0.1804375,
+        0.2126729, 0.7151522, 0.0721750,
+        0.0193339, 0.1191920, 0.9503041
+    );
+    return M * r;
 }
-vec3 linearToSrgb(vec3 c) {
-    return pow(max(c, vec3(0.0)), vec3(1.0 / 2.2));
+
+// XYZ -> Lab (D65 reference)
+vec3 xyzToLab(vec3 xyz) {
+    const vec3 white = vec3(0.95047, 1.00000, 1.08883); // D65
+    vec3 v = xyz / white;
+    vec3 f;
+    for (int i = 0; i < 3; ++i) {
+        float t = v[i];
+        f[i] = t > 0.008856 ? pow(t, 1.0/3.0) : (7.787 * t + 16.0/116.0);
+    }
+    float L = 116.0 * f.y - 16.0;
+    float a = 500.0 * (f.x - f.y);
+    float b = 200.0 * (f.y - f.z);
+    return vec3(L, a, b);
+}
+
+vec3 rgbToLab(vec3 srgb) {
+    vec3 lin = srgbToLinear(srgb);
+    vec3 xyz = linearRGBToXYZ(lin);
+    return xyzToLab(xyz);
 }
 
 void main() {
-    // Sample with normalized UVs to avoid oversized pixel / zoom issues.
-    // Use the engine-provided v_texCoord and sampler2D u_currentTexture.
     vec4 src = texture(u_currentTexture, v_texCoord);
-
-    // Preserve alpha
-    float srcA = src.a;
-
-    // Work in sRGB space for distance (matches UI parameter scale)
-    vec3 srcSRGB   = src.rgb;
-    vec3 baseSRGB  = u_baseColor;
-    vec3 targetSRGB = u_targetColor;
-
-    // Clamp inputs to safe ranges
-    float threshold = max(u_threshold, 0.0);
-    float softness  = max(u_softness, 0.0);
-
-    // Euclidean distance in sRGB space
-    float d = distance(srcSRGB, baseSRGB);
-
-    // Build smooth transition region: match==1 where distance is small (close to base)
-    float halfSoft = 0.5 * softness;
-    float edge0 = max(0.0, threshold - halfSoft);
-    float edge1 = threshold + halfSoft;
-
-    float s = 0.0;
-    if (edge1 > edge0) {
-        s = smoothstep(edge0, edge1, d); // 0 when close, 1 when far
-    } else {
-        // No softness -> hard threshold
-        s = step(threshold, d);
-    }
-    float match = 1.0 - s; // 1 when we should fully replace, 0 when untouched
-
-    // Mix in sRGB space
-    vec3 outSRGB = mix(srcSRGB, targetSRGB, match);
-
-    fragColor = vec4(outSRGB, srcA);
-}
+    float srcA =*
