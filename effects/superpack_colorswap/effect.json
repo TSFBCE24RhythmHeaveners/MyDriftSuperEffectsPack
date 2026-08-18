@@ -7,7 +7,7 @@
     { "id": "baseColor",   "type": "color", "displayName": "Base color",   "defaultValue": "#ffff00" },
     { "id": "targetColor", "type": "color", "displayName": "Target color", "defaultValue": "#ff0000" },
     { "id": "threshold",   "type": "float", "displayName": "Threshold",    "defaultValue": 0.07, "minValue": 0.0, "maxValue": 1.0 },
-    { "id": "softness",    "type": "float", "displayName": "Softness",     "defaultValue": 0.05, "minValue": 0.0, "maxValue": 1.0 
+    { "id": "softness",    "type": "float", "displayName": "Softness",     "defaultValue": 0.05, "minValue": 0.0, "maxValue": 1.0 }
   ],
   "backend": "gpu",
   "pipeline": {
