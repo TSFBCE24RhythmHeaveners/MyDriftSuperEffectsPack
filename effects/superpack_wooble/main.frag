@@ -9,9 +9,9 @@ void main() {
         return;
     }
 
-    float a = clamp(amount, 0.0, 10.0) * 0.04;
+    float a = clamp(amount, -10.0, 10.0) * 0.04;
     float f = clamp(frequency, 1.0, 20.0);
-    float t = u_time * speed + evolution;
+    float t = u_time * speed + (evolution / 10);
     vec2 uv = v_texCoord;
     if (axis < 0.5) {
         uv.x += sin(uv.y * f * 6.2831853 + t) * a;
