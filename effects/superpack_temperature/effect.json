@@ -6,11 +6,19 @@
   "parameters": [
     {
       "identifier": "temperature",
-      "displayName": "Kelvin",
+      "displayName": "Temperature (In Kelvin)",
       "type": "float",
       "minValue": 3000,
       "maxValue": 10000,
       "defaultValue": 6500
+    },
+    {
+      "identifier": "tint",
+      "displayName": "Tint (Green/Magenta)",
+      "type": "float",
+      "defaultValue": 0.0,
+      "minValue": -1,
+      "maxValue": 1
     }
   ],
   "backend": "gpu",
