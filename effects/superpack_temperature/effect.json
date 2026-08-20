@@ -17,8 +17,8 @@
       "displayName": "Tint (Green/Magenta)",
       "type": "float",
       "defaultValue": 0.0,
-      "minValue": -1.4,
-      "maxValue": 1.4
+      "minValue": -1.5,
+      "maxValue": 1.5
     }
   ],
   "backend": "gpu",
