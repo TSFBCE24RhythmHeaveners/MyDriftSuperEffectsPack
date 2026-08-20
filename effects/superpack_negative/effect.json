@@ -15,10 +15,10 @@
     {
       "identifier": "tintMode",
       "displayName": "Tint Mode",
-      "type": "bool",
+      "type": "float",
       "defaultValue": 0.0,
       "minValue": 0,
-      "maxValue": 1
+      "maxValue": 2
     },
     {
       "identifier": "invertColor",
