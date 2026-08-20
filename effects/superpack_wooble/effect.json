@@ -10,13 +10,13 @@
       "type": "float",
       "minValue": 0,
       "maxValue": 2,
-      "defaultValue": 0.2
+      "defaultValue": 0.4
     },
     {
       "identifier": "frequency",
       "displayName": "Frequency",
       "type": "float",
-      "minValue": 1,
+      "minValue": 0.5,
       "maxValue": 20,
       "defaultValue": 5
     },
@@ -26,7 +26,7 @@
       "type": "float",
       "minValue": 0,
       "maxValue": 62.82,
-      "defaultValue": 10
+      "defaultValue": 12.56
     },
     {
       "identifier": "evolution",
@@ -34,7 +34,7 @@
       "type": "float",
       "minValue": 0,
       "maxValue": 62.82,
-      "defaultValue": 10
+      "defaultValue": 0
     },
     {
       "identifier": "axis",
