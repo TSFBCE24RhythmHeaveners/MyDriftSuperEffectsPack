@@ -6,5 +6,5 @@ void main() {
     float t = (temperature - 6500.0) / 3500.0; // -1..~1
     vec3 warm = vec3(0.15, 0.05, -0.15) * t;
     vec3 gain = vec3(1.0 + tint * 0.18, 1.0 - tint * 0.22, 1.0 + tint * 0.18);
-    fragColor = vec4(clamp(c.rgb + warm * gain, 0.0, 1.0), c.a);
+    fragColor = vec4(clamp(c.rgb * gain + warm, 0.0, 1.0), c.a);
 }
