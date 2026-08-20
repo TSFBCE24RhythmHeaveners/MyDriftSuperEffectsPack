@@ -17,9 +17,9 @@ void main() {
     vec3 inverted = vec3(1.0) - source.rgb;
     
     vec3 result;
-    if (tintMode < 0.5) {
+    if (tintMode < 0.66) {
         result = mix(source.rgb, inverted, normalizedStrength);
-    } else if (tintMode > 0.5 && tintMode < 1.5) {
+    } else if (tintMode > 0.66 && tintMode < 1.33) {
         float tintIntensity = length(invertColor) / sqrt(3.0);
         vec3 difference = abs(inverted - invertColor);
         vec3 blended = mix(source.rgb, difference, tintIntensity);
