@@ -6,15 +6,15 @@
   "parameters": [
     {
       "identifier": "temperature",
-      "displayName": "Temperature (In Kelvin)",
+      "displayName": "Temperature",
       "type": "float",
-      "minValue": 3000,
-      "maxValue": 10000,
-      "defaultValue": 6500
+      "minValue": 2000,
+      "maxValue": 9000,
+      "defaultValue": 5500
     },
     {
       "identifier": "tint",
-      "displayName": "Tint (Green/Magenta)",
+      "displayName": "Tint",
       "type": "float",
       "defaultValue": 0.0,
       "minValue": -1.6,
