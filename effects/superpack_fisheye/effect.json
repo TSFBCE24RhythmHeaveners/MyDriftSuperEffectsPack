@@ -1,0 +1,66 @@
+{
+  "id": "superpack_fisheye",
+  "displayName": "SuperPack Lens Distortion",
+  "category": "glitch",
+  "order": 37393000015,
+  "parameters": [
+    {
+      "identifier": "k1",
+      "displayName": "Primary Bulge-Pinch",
+      "type": "float",
+      "defaultValue": -0.25,
+      "minValue": -1,
+      "maxValue": 1
+    },
+    {
+      "identifier": "k2",
+      "displayName": "Secondary Bulge-Pinch",
+      "type": "float",
+      "defaultValue": 0.0,
+      "minValue": -1,
+      "maxValue": 1
+    },
+    {
+      "identifier": "centerX",
+      "displayName": "Center X",
+      "type": "float",
+      "defaultValue": 0.5,
+      "minValue": 0.0,
+      "maxValue": 1.0
+    },
+    {
+      "identifier": "centerY",
+      "displayName": "Center Y",
+      "type": "float",
+      "defaultValue": 0.5,
+      "minValue": 0.0,
+      "maxValue": 1.0
+    },
+    {
+      "identifier": "scale",
+      "displayName": "Scale",
+      "type": "float",
+      "defaultValue": 1.0,
+      "minValue": 0.32,
+      "maxValue": 3
+    }
+  ],
+  "backend": "gpu",
+  "pipeline": {
+    "intermediateBuffers": [],
+    "passes": [
+      {
+        "passIndex": 0,
+        "fragmentShader": "main.frag",
+        "inputs": [
+          {
+            "type": "source_texture"
+          }
+        ],
+        "output": {
+          "type": "canvas"
+        }
+      }
+    ]
+  }
+}
