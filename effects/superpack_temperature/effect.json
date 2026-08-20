@@ -8,9 +8,9 @@
       "identifier": "temperature",
       "displayName": "Temperature",
       "type": "float",
-      "minValue": 2000,
-      "maxValue": 9000,
-      "defaultValue": 5500
+      "minValue": 3000,
+      "maxValue": 10000,
+      "defaultValue": 6500
     },
     {
       "identifier": "tint",
