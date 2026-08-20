@@ -25,7 +25,7 @@
       "defaultValue": 0.0,
       "minValue": 0,
       "maxValue": 1
-    },
+    }
   ],
   "backend": "gpu",
   "pipeline": {
