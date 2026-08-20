@@ -11,7 +11,7 @@ void main() {
     vec4 source = texture(u_currentTexture, v_texCoord);
     
     // Normalize strength from 0-100 to 0.0-1.0
-    float normalizedStrength = clamp(strength / 100.0, 0.0, 1.0);
+    float normalizedStrength = clamp(strength, 0.0, 1.0);
     
     // Invert the RGB channels
     vec3 inverted = vec3(1.0) - source.rgb;
@@ -22,6 +22,7 @@ void main() {
         // Standard invert mode: invert then blend with original
         result = mix(source.rgb, inverted, normalizedStrength);
     } else {
+        // Tint mode: invert the tint color and multiply by inverted image
         vec3 invertedTint = vec3(1.0) - invertColor;
         result = inverted * invertedTint;
         result = mix(source.rgb, result, normalizedStrength);
