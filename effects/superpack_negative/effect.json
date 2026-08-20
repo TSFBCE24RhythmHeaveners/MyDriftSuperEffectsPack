@@ -13,18 +13,18 @@
       "defaultValue": 1.0
     },
     {
-      "identifier": "invertColor",
-      "displayName": "Invert Color",
-      "type": "color",
-      "defaultValue": "#ffffff"
-    },
-    {
       "identifier": "tintMode",
       "displayName": "Tint Mode",
       "type": "bool",
       "defaultValue": 0.0,
       "minValue": 0,
       "maxValue": 1
+    },
+    {
+      "identifier": "invertColor",
+      "displayName": "Tint Color",
+      "type": "color",
+      "defaultValue": "#ffffff"
     }
   ],
   "backend": "gpu",
