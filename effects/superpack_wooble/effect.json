@@ -8,7 +8,7 @@
       "identifier": "amount",
       "displayName": "Amount",
       "type": "float",
-      "minValue": -2,
+      "minValue": 0,
       "maxValue": 2,
       "defaultValue": 0.2
     },
