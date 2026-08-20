@@ -9,16 +9,16 @@
       "displayName": "Primary Bulge-Pinch",
       "type": "float",
       "defaultValue": -0.25,
-      "minValue": -1,
-      "maxValue": 1
+      "minValue": -2,
+      "maxValue": 2
     },
     {
       "identifier": "k2",
       "displayName": "Secondary Bulge-Pinch",
       "type": "float",
       "defaultValue": 0.0,
-      "minValue": -1,
-      "maxValue": 1
+      "minValue": -2,
+      "maxValue": 2
     },
     {
       "identifier": "centerX",
