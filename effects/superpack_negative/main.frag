@@ -4,7 +4,7 @@ out vec4 fragColor;
 
 uniform sampler2D u_currentTexture;
 uniform float strength;
-uniform vec3 invertColor;
+uniform vec3 invertColor; // per-channel mask: 1 = invert that channel, 0 = leave it
 
 void main() {
     vec4 source = texture(u_currentTexture, v_texCoord);
@@ -15,11 +15,15 @@ void main() {
     // Invert the RGB channels
     vec3 inverted = vec3(1.0) - source.rgb;
     
-    // Blend inverted color with the invert effect
-    vec3 blended = mix(inverted, invertColor, (1.0 - normalizedStrength));
-    
-    // Apply strength as a blend between original and effect
-    vec3 result = mix(source.rgb, blended, normalizedStrength);
+    // Use invertColor as a per-channel mask: each component controls inversion for that channel.
+    // e.g. (1,0,0) = invert red only, (1,1,0) = invert red+green, (1,1,1) = full inversion.
+    vec3 mask = clamp(invertColor, 0.0, 1.0);
+
+    // Apply the mask so only selected channels are inverted
+    vec3 targeted = mix(source.rgb, inverted, mask);
+
+    // Apply strength as a blend between original and the targeted inversion
+    vec3 result = mix(source.rgb, targeted, normalizedStrength);
     
     // Preserve alpha channel
     fragColor = vec4(result, source.a);
