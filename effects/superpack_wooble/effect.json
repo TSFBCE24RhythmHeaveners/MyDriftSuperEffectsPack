@@ -29,6 +29,14 @@
       "defaultValue": 10
     },
     {
+      "identifier": "evolution",
+      "displayName": "Evolution",
+      "type": "float",
+      "minValue": 0,
+      "maxValue": 62.82,
+      "defaultValue": 10
+    },
+    {
       "identifier": "axis",
       "displayName": "Axis",
       "type": "float",
