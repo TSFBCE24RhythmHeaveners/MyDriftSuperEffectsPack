@@ -22,10 +22,8 @@ void main() {
         // Standard invert mode: invert then blend with original
         result = mix(source.rgb, inverted, normalizedStrength);
     } else {
-        // Tint mode: invert the tint color and multiply by inverted image
-        vec3 invertedTint = vec3(1.0) - invertColor;
-        result = inverted * invertedTint;
-        result = mix(source.rgb, result, normalizedStrength);
+        vec3 difference = abs(inverted - invertColor);
+        result = mix(source.rgb, difference, normalizedStrength);
     }
     
     // Preserve alpha channel
