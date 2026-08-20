@@ -1,7 +1,7 @@
 {
   "id": "superpack_negative",
   "displayName": "SuperPack Color Inversion",
-  "category": "stylize",
+  "category": "color",
   "order": 37393000014,
   "parameters": [
     {
