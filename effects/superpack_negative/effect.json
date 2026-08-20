@@ -17,7 +17,15 @@
       "displayName": "Invert Color",
       "type": "color",
       "defaultValue": "#ffffff"
-    }
+    },
+    {
+      "identifier": "tintMode",
+      "displayName": "Tint Mode",
+      "type": "bool",
+      "defaultValue": 0.0,
+      "minValue": 0,
+      "maxValue": 1
+    },
   ],
   "backend": "gpu",
   "pipeline": {
