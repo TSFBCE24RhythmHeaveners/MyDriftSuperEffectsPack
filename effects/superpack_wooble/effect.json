@@ -25,15 +25,15 @@
       "displayName": "Speed",
       "type": "float",
       "minValue": 0,
-      "maxValue": 62.82,
-      "defaultValue": 12.56
+      "maxValue": 100,
+      "defaultValue": 100
     },
     {
       "identifier": "evolution",
       "displayName": "Evolution",
       "type": "float",
       "minValue": 0,
-      "maxValue": 62.82,
+      "maxValue": 100,
       "defaultValue": 0
     },
     {
@@ -45,6 +45,9 @@
       "defaultValue": 0
     }
   ],
+  "fixedParams": {
+    "radsmode": "0.0"
+  },
   "backend": "gpu",
   "pipeline": {
     "intermediateBuffers": [],
