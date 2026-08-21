@@ -18,7 +18,7 @@ void main() {
     float r = length(p) + 1e-5;
     float a = atan(p.y, p.x);
     float logR = log(r);
-    float z = max(zoom, 0.5);
+    float z = max(zoom, 0.33333333);
     float t = turns * 2.0 * PI;
     float newA = a + t * logR;
     float newR = exp(logR / z);
