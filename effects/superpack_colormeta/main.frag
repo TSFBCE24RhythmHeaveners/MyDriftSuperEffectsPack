@@ -9,9 +9,11 @@ out vec4 fragColor;
 // User-facing parameters (bound by effect.json identifiers)
 uniform float brightness;   // additive: -1..1 (0 = no change)
 uniform float gamma;        // gamma: >0 (1 = no change)
+uniform float exposure;     // EV adjustment: -2..2 (0 = no change)
 uniform float contrast;     // contrast multiplier: 0..2 (1 = no change)
 uniform float saturation;   // 0..2 (1 = no change)
 uniform float temperature;  // -1..1 (negative=cool, positive=warm)
+uniform float greenpink;    // -1..1 (negative=green, positive=pink)
 uniform float hue;          // degrees, -180..180 (0 = no change)
 
 // Helpers
@@ -50,6 +52,24 @@ vec3 applyTemperature(vec3 c, float t) {
     return c;
 }
 
+// Green-Pink tint: shift cyan/magenta channel
+vec3 applyGreenPink(vec3 c, float gp) {
+    // gp in [-1,1]: negative pushes toward green, positive toward pink/magenta
+    // This is a simple channel push: reduce green for pink, reduce magenta for green
+    float gpShift = clamp(gp * 0.15, -0.2, 0.2);
+    c.g = clamp(c.g - gpShift, 0.0, 1.0);           // green channel
+    c.r = clamp(c.r + gpShift * 0.8, 0.0, 1.0);    // boost red for pink
+    c.b = clamp(c.b + gpShift * 0.5, 0.0, 1.0);    // slight blue boost
+    return c;
+}
+
+// Exposure: multiplicative brightness in linear space
+vec3 applyExposure(vec3 c, float exp) {
+    // exp in [-2,2], each stop = 2x brightness change
+    // Formula: output = input * 2^exposure
+    return c * pow(2.0, exp);
+}
+
 void main() {
     // Sample the source exactly at the provided texture coordinates.
     // Do NOT manipulate v_texCoord (avoid zoom / pixelization bugs).
@@ -59,6 +79,9 @@ void main() {
     float g = max(gamma, 0.0001);
 
     vec3 col = src.rgb;
+
+    // Exposure: early multiplicative adjustment (affects subsequent steps)
+    col = applyExposure(col, exposure);
 
     // Brightness: simple additive offset (safe)
     col += brightness;
@@ -73,6 +96,9 @@ void main() {
 
     // Temperature: gentle RGB bias
     col = applyTemperature(col, temperature);
+
+    // Green-Pink tint: cyan/magenta shift
+    col = applyGreenPink(col, greenpink);
 
     // Hue: rotate chroma in YIQ-like space
     float angle = radians(hue);
