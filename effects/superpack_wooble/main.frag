@@ -1,7 +1,7 @@
 #version 330 core
 in vec2 v_texCoord; out vec4 fragColor;
 uniform sampler2D u_currentTexture; uniform float u_time;
-uniform float amount; uniform float frequency; uniform float speed; uniform float evolution; uniform float axis; 
+uniform float amount; uniform float frequency; uniform float speed; uniform float evolution; uniform float axis; uniform float radsmode; 
 
 void main() {
     if (amount <= 1e-5) {
@@ -11,7 +11,11 @@ void main() {
 
     float a = clamp(amount, -10.0, 10.0) * 0.04;
     float f = clamp(frequency, 0.5, 20.0);
-    float t = u_time * speed + (evolution / 10);
+    if (radsmode < 0.5) {
+        float t = u_time * speed + (evolution / 10);
+    } else {
+        float t = ((u_time * speed + (evolution / 10)) * 1.59154943);
+    }
     vec2 uv = v_texCoord;
     if (axis < 0.5) {
         uv.x += sin(uv.y * f * 6.2831853 + t) * a;
