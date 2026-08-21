@@ -16,7 +16,7 @@
       "identifier": "frequency",
       "displayName": "Frequency",
       "type": "float",
-      "minValue": 0.5,
+      "minValue": 0.1,
       "maxValue": 20,
       "defaultValue": 5
     },
