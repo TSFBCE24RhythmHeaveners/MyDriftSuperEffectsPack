@@ -37,9 +37,6 @@
       "maxValue": 1.0
     }
   ],
-  "fixedParams": {
-    "radsmode": "0.0"
-  },
   "backend": "gpu",
   "pipeline": {
     "intermediateBuffers": [],
