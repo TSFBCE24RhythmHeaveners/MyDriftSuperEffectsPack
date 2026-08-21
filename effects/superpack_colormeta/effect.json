@@ -21,6 +21,15 @@
       "defaultValue": 1.0
     },
     {
+      "identifier": "exposure",
+      "displayName": "Exposure",
+      "type": "float",
+      "minValue": -2.0,
+      "maxValue": 2.0,
+      "defaultValue": 0.0
+    },
+  
+    {
       "identifier": "contrast",
       "displayName": "Contrast",
       "type": "float",
@@ -39,6 +48,14 @@
     {
       "identifier": "temperature",
       "displayName": "Temperature",
+      "type": "float",
+      "minValue": -1.0,
+      "maxValue": 1.0,
+      "defaultValue": 0.0
+    },
+    {
+      "identifier": "greenpink",
+      "displayName": "Tint",
       "type": "float",
       "minValue": -1.0,
       "maxValue": 1.0,
