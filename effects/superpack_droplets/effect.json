@@ -9,15 +9,15 @@
       "displayName": "Amplitude",
       "type": "float",
       "minValue": 0,
-      "maxValue": 64,
-      "defaultValue": 30
+      "maxValue": 100,
+      "defaultValue": 64
     },
     {
       "identifier": "frequency",
       "displayName": "Frequency",
       "type": "float",
       "minValue": 0,
-      "maxValue": 64,
+      "maxValue": 100,
       "defaultValue": 3
     },
     {
