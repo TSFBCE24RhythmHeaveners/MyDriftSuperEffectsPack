@@ -9,8 +9,8 @@
       "displayName": "Amount",
       "type": "float",
       "defaultValue": 0.5,
-      "minValue": -2,
-      "maxValue": 2
+      "minValue": -1.6,
+      "maxValue": 1.6
     },
     {
       "identifier": "radius",
