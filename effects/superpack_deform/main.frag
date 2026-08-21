@@ -57,7 +57,7 @@ void main() {
     uv /= scale;
 
     // 9. Apply offset transformations (after scaling to maintain offset consistency)
-    uv += vec2(u_offset_x, u_offset_y);
+    uv += vec2((0 - u_offset_x), (0 - u_offset_y));
 
     // 10. Reposition coordinates back into the original texture canvas space [0.0, 1.0]
     uv += vec2(0.5);
