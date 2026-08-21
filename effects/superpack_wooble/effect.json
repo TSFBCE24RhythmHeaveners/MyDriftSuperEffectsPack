@@ -5,20 +5,20 @@
   "order": 37393000000,
   "parameters": [
     {
+      "identifier": "frequency",
+      "displayName": "Peaks",
+      "type": "float",
+      "minValue": 0.1,
+      "maxValue": 20,
+      "defaultValue": 5
+    },
+    {
       "identifier": "amount",
       "displayName": "Amount",
       "type": "float",
       "minValue": 0,
       "maxValue": 2,
       "defaultValue": 0.4
-    },
-    {
-      "identifier": "frequency",
-      "displayName": "Frequency",
-      "type": "float",
-      "minValue": 0.1,
-      "maxValue": 20,
-      "defaultValue": 5
     },
     {
       "identifier": "speed",
@@ -30,7 +30,7 @@
     },
     {
       "identifier": "evolution",
-      "displayName": "Evolution",
+      "displayName": "Phase",
       "type": "float",
       "minValue": 0,
       "maxValue": 100,
