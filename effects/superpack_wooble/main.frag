@@ -12,9 +12,9 @@ void main() {
     float a = clamp(amount, -10.0, 10.0) * 0.04;
     float f = clamp(frequency, 0.5, 20.0);
     if (radsmode < 0.5) {
-        float t = u_time * speed + (evolution / 10);
-    } else {
         float t = ((u_time * speed + (evolution / 10)) * 1.59154943);
+    } else {
+        float t = u_time * speed + (evolution / 10);
     }
     vec2 uv = v_texCoord;
     if (axis < 0.5) {
