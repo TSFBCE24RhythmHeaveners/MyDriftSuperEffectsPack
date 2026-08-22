@@ -19,9 +19,9 @@ void main() {
     }
     vec2 uv = v_texCoord;
     if (axis < 0.5) {
-        uv.x += sin(uv.y * f * radsmode + t) * a;
+        uv.x += sin(uv.y * f * bas + t) * a;
     } else {
-        uv.y += sin(uv.x * f * radsmode + t) * a;
+        uv.y += sin(uv.x * f * bas + t) * a;
     }
     fragColor = texture(u_currentTexture, clamp(uv, 0.0, 1.0));
 }
