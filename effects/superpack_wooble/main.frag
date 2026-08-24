@@ -1,7 +1,7 @@
 #version 330 core
 in vec2 v_texCoord; out vec4 fragColor;
 uniform sampler2D u_currentTexture; uniform float u_time;
-uniform float amount; uniform float frequency; uniform float speed; uniform float evolution; uniform float axis; uniform float radsmode;
+uniform float amount; uniform float frequency; uniform float speed; uniform float evolution; uniform float axis; uniform bool radsmode;
 
 void main() {
     if (amount <= 1e-5) {
