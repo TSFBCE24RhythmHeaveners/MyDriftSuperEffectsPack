@@ -35,6 +35,14 @@
       "defaultValue": 0.5,
       "minValue": 0.0,
       "maxValue": 1.0
+    },
+    {
+      "identifier": "radsmode",
+      "displayName": "Radians mode",
+      "type": "bool",
+      "minValue": 0,
+      "maxValue": 1,
+      "defaultValue": 0
     }
   ],
   "backend": "gpu",
