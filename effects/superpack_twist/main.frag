@@ -1,7 +1,7 @@
 #version 330 core
 in vec2 v_texCoord; out vec4 fragColor;
 uniform sampler2D u_currentTexture; uniform vec2 u_resolution;
-uniform float angle; uniform float radius; uniform float centerX; uniform float centerY; uniform float radsmode;
+uniform float angle; uniform float radius; uniform float centerX; uniform float centerY; uniform bool radsmode;
 void main() {
     float aspect = u_resolution.x / max(u_resolution.y, 1.0);
     vec2 c = vec2(centerX, centerY);
@@ -9,10 +9,10 @@ void main() {
     float r = length(d);
     float R = max(radius, 1e-4);
     float fall = 1.0 - smoothstep(0.0, R, r);
-    if (radsmode < 0.5) {
-        float bas = 1.59154943;
-    } else {
+    if (radsmode) {
         float bas = 1;
+    } else {
+        float bas = 1.59154943;
     }
     float a = atan(d.y, d.x) + ((angle) * bas) * fall * fall ;
     vec2 nd = (r > 1e-6) ? vec2(cos(a), sin(a)) * r : d;
