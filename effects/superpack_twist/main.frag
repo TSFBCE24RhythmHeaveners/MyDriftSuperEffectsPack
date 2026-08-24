@@ -9,7 +9,12 @@ void main() {
     float r = length(d);
     float R = max(radius, 1e-4);
     float fall = 1.0 - smoothstep(0.0, R, r);
-    float a = atan(d.y, d.x) + ((angle) * 1.59154943) * fall * fall ;
+    if (radsmode < 0.5) {
+        float bas = 1.59154943;
+    } else {
+        float bas = 1;
+    }
+    float a = atan(d.y, d.x) + ((angle) * bas) * fall * fall ;
     vec2 nd = (r > 1e-6) ? vec2(cos(a), sin(a)) * r : d;
     vec2 src = c + vec2(nd.x / aspect, nd.y);
     fragColor = texture(u_currentTexture, clamp(src, 0.0, 1.0));
