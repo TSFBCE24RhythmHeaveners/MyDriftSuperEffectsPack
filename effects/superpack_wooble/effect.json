@@ -25,7 +25,7 @@
       "displayName": "Speed",
       "type": "float",
       "minValue": 0,
-      "maxValue": 100,
+      "maxValue": 62.82,
       "defaultValue": 20
     },
     {
@@ -33,7 +33,7 @@
       "displayName": "Phase",
       "type": "float",
       "minValue": 0,
-      "maxValue": 100,
+      "maxValue": 62.82,
       "defaultValue": 0
     },
     {
