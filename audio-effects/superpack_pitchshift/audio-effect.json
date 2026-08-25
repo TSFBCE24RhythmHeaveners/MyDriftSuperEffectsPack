@@ -6,7 +6,7 @@
   "order": 37393000000,
   "backend": "juce",
   "processor": "pitch",
-  "prerollMs": 300,
+  "prerollMs": 0,
   "parameters": [
     {
       "identifier": "pitch",
