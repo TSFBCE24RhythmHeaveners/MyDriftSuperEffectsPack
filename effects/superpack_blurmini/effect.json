@@ -1,0 +1,53 @@
+{
+  "id": "superpack_blurmini",
+  "displayName": "SuperPack Quick Blur",
+  "category": "impact",
+  "order": 37393000017,
+  "parameters": [
+    {
+      "identifier": "sigma",
+      "displayName": "Strength",
+      "type": "float",
+      "minValue": 0,
+      "maxValue": 100,
+      "defaultValue": 20
+    }
+  ],
+  "backend": "gpu",
+  "pipeline": {
+    "intermediateBuffers": [
+      {
+        "id": "scratch",
+        "scale": 1.0
+      }
+    ],
+    "passes": [
+      {
+        "passIndex": 0,
+        "fragmentShader": "blur_h.frag",
+        "inputs": [
+          {
+            "type": "source_texture"
+          }
+        ],
+        "output": {
+          "type": "buffer",
+          "id": "scratch"
+        }
+      },
+      {
+        "passIndex": 1,
+        "fragmentShader": "blur_v.frag",
+        "inputs": [
+          {
+            "type": "buffer",
+            "id": "scratch"
+          }
+        ],
+        "output": {
+          "type": "canvas"
+        }
+      }
+    ]
+  }
+}
