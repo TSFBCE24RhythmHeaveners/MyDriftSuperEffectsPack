@@ -34,7 +34,7 @@ void main()
 
     float userStrength = getUserStrength();
     // Map 0..100 -> 0..10 px radius (keeps sample counts reasonable). Adjust multiplier if you want stronger blur.
-    float radiusPx = clamp(userStrength * 0.1, 0.0, 10.0);
+    float radiusPx = clamp(userStrength * 10, 0.0, 10.0);
 
     // Very small strength -> passthrough
     if (radiusPx < 0.5) {
