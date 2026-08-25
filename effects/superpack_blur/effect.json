@@ -1,0 +1,34 @@
+{
+  "id": "superpack_blur",
+  "displayName": "SuperPack Blur",
+  "category": "impact",
+  "order": 37393000016,
+  "parameters": [
+    {
+      "identifier": "strength",
+      "displayName": "Strength",
+      "type": "float",
+      "defaultValue": 20,
+      "minValue": 0,
+      "maxValue": 100
+    }
+  ],
+  "backend": "gpu",
+  "pipeline": {
+    "intermediateBuffers": [],
+    "passes": [
+      {
+        "passIndex": 0,
+        "fragmentShader": "main.frag",
+        "inputs": [
+          {
+            "type": "source_texture"
+          }
+        ],
+        "output": {
+          "type": "canvas"
+        }
+      }
+    ]
+  }
+}
