@@ -26,7 +26,7 @@
       "type": "float",
       "minValue": 0,
       "maxValue": 62.82,
-      "defaultValue": 20
+      "defaultValue": 12.57
     },
     {
       "identifier": "evolution",
