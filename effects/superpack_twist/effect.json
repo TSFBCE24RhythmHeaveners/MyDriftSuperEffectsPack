@@ -9,8 +9,8 @@
       "displayName": "Angle",
       "type": "float",
       "defaultValue": 2.0,
-      "minValue": -10,
-      "maxValue": 10
+      "minValue": -9.43,
+      "maxValue": 9.43
     },
     {
       "identifier": "radius",
