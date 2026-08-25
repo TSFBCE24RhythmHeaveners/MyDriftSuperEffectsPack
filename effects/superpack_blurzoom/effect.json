@@ -10,7 +10,7 @@
       "type": "float",
       "defaultValue": 0.35,
       "minValue": 0.0,
-      "maxValue": 1
+      "maxValue": 4
     },
     {
       "identifier": "centerX",
