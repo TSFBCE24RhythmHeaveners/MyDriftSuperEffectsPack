@@ -5,12 +5,18 @@
   "order": 37393000016,
   "parameters": [
     {
-      "identifier": "strength",
+      "id": "strength",
       "displayName": "Strength",
       "type": "float",
-      "defaultValue": 20,
       "minValue": 0,
-      "maxValue": 100
+      "maxValue": 100,
+      "defaultValue": 20
+    },
+    {
+      "id": "simplemode",
+      "displayName": "Simple Mode",
+      "type": "bool",
+      "defaultValue": false
     }
   ],
   "backend": "gpu",
