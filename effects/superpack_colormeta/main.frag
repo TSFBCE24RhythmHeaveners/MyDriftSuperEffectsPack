@@ -13,7 +13,7 @@ uniform float exposure;     // EV adjustment: -2..2 (0 = no change)
 uniform float contrast;     // contrast multiplier: 0..2 (1 = no change)
 uniform float saturation;   // 0..2 (1 = no change)
 uniform float temperature;  // -1..1 (negative=cool, positive=warm)
-uniform float greenpink;    // -1..1 (negative=green, positive=pink)
+uniform float greenmagenta;    // -1..1 (negative=green, positive=pink)
 uniform float hue;          // degrees, -180..180 (0 = no change)
 
 // Helpers
@@ -52,8 +52,8 @@ vec3 applyTemperature(vec3 c, float t) {
     return c;
 }
 
-// Green-Pink tint: shift cyan/magenta channel
-vec3 applyGreenPink(vec3 c, float gp) {
+// Green-Magenta tint: shift cyan/magenta channel
+vec3 applyGreenMagenta(vec3 c, float gp) {
     // gp in [-1,1]: negative pushes toward green, positive toward pink/magenta
     // This is a simple channel push: reduce green for pink, reduce magenta for green
     float gpShift = clamp(gp * 0.15, -0.2, 0.2);
@@ -98,7 +98,7 @@ void main() {
     col = applyTemperature(col, temperature);
 
     // Green-Pink tint: cyan/magenta shift
-    col = applyGreenPink(col, greenpink);
+    col = applyGreenMagenta(col, greenmagenta);
 
     // Hue: rotate chroma in YIQ-like space
     float angle = radians(hue);
