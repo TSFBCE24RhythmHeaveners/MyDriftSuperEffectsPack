@@ -54,7 +54,7 @@
       "defaultValue": 0.0
     },
     {
-      "identifier": "greenpink",
+      "identifier": "greenmagenta",
       "displayName": "Tint",
       "type": "float",
       "minValue": -1.0,
