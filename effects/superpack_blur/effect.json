@@ -5,7 +5,7 @@
   "order": 37393000016,
   "parameters": [
     {
-      "id": "u_strength",
+      "identifier": "u_strength",
       "displayName": "Strength",
       "type": "float",
       "minValue": 0,
@@ -13,7 +13,7 @@
       "defaultValue": 20
     },
     {
-      "id": "u_simplemode",
+      "identifier": "u_simplemode",
       "displayName": "Simple Mode",
       "type": "bool",
       "defaultValue": false
