@@ -68,6 +68,18 @@
       "minValue": -180,
       "maxValue": 180,
       "defaultValue": 0
+    },
+    {
+      "identifier": "preserveSaturationOnContrast",
+      "displayName": "Preserve Saturation on Contrast",
+      "type": "bool",
+      "defaultValue": false
+    },
+    {
+      "identifier": "preserveTemperatureOnHue",
+      "displayName": "Preserve Temperature on Hue",
+      "type": "bool",
+      "defaultValue": true
     }
   ],
   "backend": "gpu",
