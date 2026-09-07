@@ -13,12 +13,12 @@
       "defaultValue": 20
     },
     {
-      "identifier": "u_simplemode",
-      "displayName": "Simple Mode",
-      "type": "bool",
+      "identifier": "u_iterations",
+      "displayName": "Iterations",
+      "type": "float",
       "defaultValue": 0,
       "minValue": 0,
-      "maxValue": 1
+      "maxValue": 2
     }
   ],
   "backend": "gpu",
