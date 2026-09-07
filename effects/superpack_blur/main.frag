@@ -6,7 +6,7 @@ out vec4 out_color;
 uniform sampler2D u_currentTexture;
 uniform vec2 u_resolution;
 uniform float u_strength;
-uniform float u_simplemode;
+uniform float u_iterations;
 
 // Fixes for CutWire Drift issues:
 // 1. Properly normalize strength to prevent oversized pixels
@@ -25,9 +25,29 @@ void main() {
     vec4 result = vec4(0.0);
     float totalWeight = 0.0;
     
-    // Choose blur kernel based on simplemode
-    if (u_simplemode < 0.5) {
-        // 5x5 blur kernel (off = standard quality)
+    if (u_iterations < 0.66666666) {
+        float kernel[9] = float[](
+            1.0, 2.0, 1.0,
+            2.0, 4.0, 2.0,
+            1.0, 2.0, 1.0
+        );
+        
+        float totalKernel = 16.0;
+        int idx = 0;
+        
+        for (int y = -1; y <= 1; y++) {
+            for (int x = -1; x <= 1; x++) {
+                vec2 sampleCoord = texCoord + vec2(x, y) * texelSize * blurRadius;
+                // Clamp to texture bounds to prevent edge bleeding
+                sampleCoord = clamp(sampleCoord, texelSize, 1.0 - texelSize);
+                
+                float weight = kernel[idx];
+                result += texture(u_currentTexture, sampleCoord) * weight;
+                totalWeight += weight;
+                idx++;
+            }
+        }
+    } else if (u_iterations > 0.66666666 && u_iterations < 1.33333333){
         float kernel[25] = float[](
             1.0, 2.0, 3.0, 2.0, 1.0,
             2.0, 4.0, 6.0, 4.0, 2.0,
@@ -52,18 +72,21 @@ void main() {
             }
         }
     } else {
-        // 3x3 blur kernel (on = cheap/fast)
-        float kernel[9] = float[](
-            1.0, 2.0, 1.0,
-            2.0, 4.0, 2.0,
-            1.0, 2.0, 1.0
+        float kernel[49] = float[](
+            1.0, 2.0, 3.0, 4.0, 3.0, 2.0, 1.0,
+            2.0, 4.0, 6.0, 8.0, 6.0, 4.0, 2.0,
+            3.0, 6.0, 9.0, 12.0, 9.0, 6.0, 3.0,
+            4.0, 8.0, 12.0, 16.0, 12.0, 8.0, 4.0,
+            3.0, 6.0, 9.0, 12.0, 9.0, 6.0, 3.0,
+            2.0, 4.0, 6.0, 8.0, 6.0, 4.0, 2.0,
+            1.0, 2.0, 3.0, 4.0, 3.0, 2.0, 1.0
         );
         
-        float totalKernel = 16.0;
+        float totalKernel = 256.00;
         int idx = 0;
         
-        for (int y = -1; y <= 1; y++) {
-            for (int x = -1; x <= 1; x++) {
+        for (int y = -3; y <= 3; y++) {
+            for (int x = -3; x <= 3; x++) {
                 vec2 sampleCoord = texCoord + vec2(x, y) * texelSize * blurRadius;
                 // Clamp to texture bounds to prevent edge bleeding
                 sampleCoord = clamp(sampleCoord, texelSize, 1.0 - texelSize);
