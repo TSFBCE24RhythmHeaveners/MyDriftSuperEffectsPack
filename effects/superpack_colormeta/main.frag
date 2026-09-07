@@ -9,12 +9,14 @@ out vec4 fragColor;
 // User-facing parameters (bound by effect.json identifiers)
 uniform float brightness;   // additive: -1..1 (0 = no change)
 uniform float gamma;        // gamma: >0 (1 = no change)
-uniform float exposure;     // EV adjustment: -2..2 (0 = no change)
 uniform float contrast;     // contrast multiplier: 0..2 (1 = no change)
 uniform float saturation;   // 0..2 (1 = no change)
 uniform float temperature;  // -1..1 (negative=cool, positive=warm)
-uniform float greenmagenta;    // -1..1 (negative=green, positive=pink)
 uniform float hue;          // degrees, -180..180 (0 = no change)
+uniform float exposure;     // EV adjustment: -2..2 (0 = no change)
+uniform float greenPink;    // -1..1 (negative=green, positive=pink)
+uniform bool preserveTemperatureOnHue;   // preserve temperature during hue rotation
+uniform bool preserveSaturationOnContrast; // preserve saturation during contrast adjustment
 
 // Helpers
 const vec3 LUMA = vec3(0.2126, 0.7152, 0.0722);
@@ -52,8 +54,8 @@ vec3 applyTemperature(vec3 c, float t) {
     return c;
 }
 
-// Green-Magenta tint: shift cyan/magenta channel
-vec3 applyGreenMagenta(vec3 c, float gp) {
+// Green-Pink tint: shift cyan/magenta channel
+vec3 applyGreenPink(vec3 c, float gp) {
     // gp in [-1,1]: negative pushes toward green, positive toward pink/magenta
     // This is a simple channel push: reduce green for pink, reduce magenta for green
     float gpShift = clamp(gp * 0.15, -0.2, 0.2);
@@ -86,23 +88,42 @@ void main() {
     // Brightness: simple additive offset (safe)
     col += brightness;
 
+    // Store saturation before contrast if preserving
+    float originalSat = saturation;
+    float lum = dot(col, LUMA);
+    
     // Contrast: scale about 0.5 (neutral mid point)
     // contrast = 1.0 -> unchanged; <1 reduces contrast; >1 increases
     col = (col - 0.5) * contrast + 0.5;
+    
+    // Restore saturation if preserve flag is set
+    if (preserveSaturationOnContrast) {
+        float newLum = dot(col, LUMA);
+        col = mix(vec3(newLum), col, originalSat);
+    }
 
     // Saturation: interpolate between luminance and color
-    float lum = dot(col, LUMA);
+    lum = dot(col, LUMA);
     col = mix(vec3(lum), col, saturation);
 
     // Temperature: gentle RGB bias
     col = applyTemperature(col, temperature);
 
     // Green-Pink tint: cyan/magenta shift
-    col = applyGreenMagenta(col, greenmagenta);
+    col = applyGreenPink(col, greenPink);
 
     // Hue: rotate chroma in YIQ-like space
     float angle = radians(hue);
-    col = rotateHue(col, angle);
+    
+    if (preserveTemperatureOnHue) {
+        // Store the temperature bias before hue rotation
+        vec3 tempComponent = applyTemperature(vec3(0.0), temperature);
+        col = rotateHue(col, angle);
+        // Reapply temperature after hue rotation
+        col = applyTemperature(col, temperature);
+    } else {
+        col = rotateHue(col, angle);
+    }
 
     // Gamma: final nonlinear stretch (affects midtones)
     col = pow(clamp(col, 0.0, 1.0), vec3(1.0 / g));
