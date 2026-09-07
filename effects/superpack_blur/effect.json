@@ -16,7 +16,9 @@
       "identifier": "u_simplemode",
       "displayName": "Simple Mode",
       "type": "bool",
-      "defaultValue": false
+      "defaultValue": 0,
+      "minValue": 0,
+      "maxValue": 1
     }
   ],
   "backend": "gpu",
