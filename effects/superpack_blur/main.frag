@@ -17,7 +17,7 @@ void main() {
     vec2 texCoord = v_texCoord;
     
     // Normalize strength to pixel units (0-100 maps to 0-25 pixel radius)
-    float blurRadius = u_strength * 1.25;
+    float blurRadius = u_strength;
     
     // Adaptive step size based on resolution to prevent zoom artifacts
     vec2 texelSize = 1.0 / u_resolution;
