@@ -25,7 +25,7 @@ void main() {
     vec4 result = vec4(0.0);
     float totalWeight = 0.0;
     
-    if (u_iterations < 0.75) {
+    if (u_iterations < 0.8) {
         float kernel[9] = float[](
             1.0, 2.0, 1.0,
             2.0, 4.0, 2.0,
@@ -97,7 +97,7 @@ void main() {
                 idx++;
             }
         }
-    } else (u_iterations > 2.4 && u_iterations < 3.2) {
+    } else if (u_iterations > 2.4 && u_iterations < 3.2) {
         float kernel[81] = float[](
             1.0, 2.0, 3.0, 4.0, 5.0, 4.0, 3.0, 2.0, 1.0,
             2.0, 4.0, 6.0, 8.0, 10.0, 8.0, 6.0, 4.0, 2.0,
