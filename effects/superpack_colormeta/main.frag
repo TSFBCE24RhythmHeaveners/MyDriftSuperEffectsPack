@@ -31,14 +31,28 @@ mat3 yiq2rgb = mat3(
     1.0, -1.106,  1.703
 );
 
+// Improved hue rotation: preserve neutral/low-chroma colors to avoid tinting whites
 vec3 rotateHue(vec3 color, float angleRad) {
     vec3 yiq = rgb2yiq * color;
+
+    // chroma magnitude in the I/Q plane
+    float chroma = length(yiq.yz);
+
+    // weight the rotation by chroma so near-neutral pixels are left mostly unchanged.
+    // Adjust these thresholds for sensitivity: 0.02 = nearly gray, 0.15 = fully chromatic.
+    float w = smoothstep(0.02, 0.15, chroma);
+
     float cs = cos(angleRad);
     float sn = sin(angleRad);
     mat2 rot = mat2(cs, -sn, sn, cs);
-    vec2 iq = rot * yiq.yz;
-    yiq.yz = iq;
-    return yiq2rgb * yiq;
+    vec2 iqRot = rot * yiq.yz;
+
+    vec3 yiqRotFull = yiq;
+    yiqRotFull.yz = iqRot;
+    vec3 rotated = yiq2rgb * yiqRotFull;
+
+    // blend between original and rotated based on chroma weight
+    return mix(color, rotated, w);
 }
 
 // Temperature tweak: subtle RGB shift toward warm/cool
@@ -100,7 +114,7 @@ void main() {
     // Green-Pink tint: cyan/magenta shift
     col = applyGreenMagenta(col, greenmagenta);
 
-    // Hue: rotate chroma in YIQ-like space
+    // Hue: rotate chroma in YIQ-like space (but preserve near-neutrals)
     float angle = radians(hue);
     col = rotateHue(col, angle);
 
