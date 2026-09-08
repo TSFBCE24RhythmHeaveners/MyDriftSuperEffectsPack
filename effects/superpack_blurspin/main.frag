@@ -11,7 +11,7 @@ void main() {
 
     vec2 c = vec2(centerX, centerY);
     vec2 d = v_texCoord - c;
-    int n = int(clamp(floor(samples + 0.5), 4.0, 24.0));
+    int n = int(clamp(floor(samples + 0.5), 3.0, 24.0));
     float span = amount * 0.35;
     vec3 acc = vec3(0.0);
     float wsum = 0.0;
