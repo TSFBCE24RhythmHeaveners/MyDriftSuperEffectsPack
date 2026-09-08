@@ -32,7 +32,7 @@
       "identifier": "samples",
       "displayName": "Samples",
       "type": "float",
-      "minValue": 4,
+      "minValue": 3,
       "maxValue": 24,
       "defaultValue": 12
     }
