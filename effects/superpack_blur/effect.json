@@ -18,7 +18,7 @@
       "type": "float",
       "defaultValue": 0,
       "minValue": 0,
-      "maxValue": 2
+      "maxValue": 4
     }
   ],
   "backend": "gpu",
