@@ -88,24 +88,28 @@ void main() {
     // Brightness: simple additive offset (safe)
     col += brightness;
 
-    // Store saturation before contrast if preserving
+    // Store original luminance and saturation before contrast if preserving
+    float originalLum = dot(col, LUMA);
     float originalSat = saturation;
-    float lum = dot(col, LUMA);
     
     // Contrast: scale about 0.5 (neutral mid point)
     // contrast = 1.0 -> unchanged; <1 reduces contrast; >1 increases
     col = (col - 0.5) * contrast + 0.5;
     
-    // Restore saturation if preserve flag is set
+    // Restore saturation if preserve flag is set (recalculate after contrast)
     if (preserveSaturationOnContrast) {
         float newLum = dot(col, LUMA);
         col = mix(vec3(newLum), col, originalSat);
     }
 
     // Saturation: interpolate between luminance and color
-    lum = dot(col, LUMA);
+    float lum = dot(col, LUMA);
     col = mix(vec3(lum), col, saturation);
 
+    // Store original color and luminance before temperature if preserving
+    vec3 colBeforeTemp = col;
+    float lumBeforeTemp = dot(col, LUMA);
+    
     // Temperature: gentle RGB bias
     col = applyTemperature(col, temperature);
 
@@ -116,8 +120,11 @@ void main() {
     float angle = radians(hue);
     
     if (preserveTemperatureOnHue) {
-        // Store the temperature bias before hue rotation
-        vec3 tempComponent = applyTemperature(vec3(0.0), temperature);
+        // Store temperature offset before hue rotation
+        vec3 tempOffset = applyTemperature(vec3(0.0), temperature);
+        // Remove temperature to get back to pre-temperature state
+        col -= tempOffset;
+        // Apply hue rotation
         col = rotateHue(col, angle);
         // Reapply temperature after hue rotation
         col = applyTemperature(col, temperature);
