@@ -31,10 +31,10 @@
     },
     {
       "identifier": "color",
-      "displayName": "Glow Colour",
+      "displayName": "Colour",
       "type": "color",
       "defaultValue": #00ffff
-    },
+    }
   ],
   "pipeline": {
     "intermediateBuffers": [
