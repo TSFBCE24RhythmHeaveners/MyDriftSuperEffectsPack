@@ -5,11 +5,10 @@ uniform float strength;
 void main() {
     vec4 src = texture(u_currentTexture, v_texCoord);
     float s = clamp(strength, 0.0, 1.0);
-    if (s <= 1e-5) {
+    if (s <= 0.5) {
         fragColor = src;
         return;
     }
-    
     vec4 c = texture(u_currentTexture, v_texCoord);
     mat3 m = mat3(0.393,0.349,0.272, 0.769,0.686,0.534, 0.189,0.168,0.131);
     fragColor = vec4(clamp(m * c.rgb, 0.0, 1.0), c.a);
