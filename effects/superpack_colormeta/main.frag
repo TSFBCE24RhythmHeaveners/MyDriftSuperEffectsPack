@@ -32,41 +32,42 @@ mat3 yiq2rgb = mat3(
     1.0, -1.106,  1.703
 );
 
-// Improved hue rotation that:
-//  - reduces rotation for near-neutral (low-chroma) pixels so whites/grays stay neutral,
-//  - preserves the original perceived luminance (LUMA) exactly by adding a neutral offset after rotation.
-vec3 rotateHuePreserveLum(vec3 color, float angleRad) {
-    // original luminance (perceptual)
-    float origLum = dot(color, LUMA);
+vec3 rotateHue(vec3 color, float angleRad) {
+    const float PI = 3.14159265;
 
-    // compute chroma (color deviation from gray) and its magnitude
-    vec3 chroma = color - vec3(origLum);
-    float chromaMag = length(chroma);
+    // YIQ conversion already defined elsewhere: rgb2yiq / yiq2rgb
+    vec3 yiq_orig = rgb2yiq * color;
+    float origLum = yiq_orig.x;
+    float chromaMag = length(yiq_orig.yz);
 
-    // weight rotation by chroma magnitude to avoid coloring near-neutral pixels.
-    // tweak the thresholds to taste: below minThresh -> no rotation; above maxThresh -> full rotation
-    const float minThresh = 0.01; // essentially neutral
-    const float maxThresh = 0.20; // fully saturated-ish
-    float rotWeight = clamp((chromaMag - minThresh) / (maxThresh - minThresh), 0.0, 1.0);
-    // optionally smooth the transition
-    rotWeight = smoothstep(0.0, 1.0, rotWeight);
+    // thresholds (tweakable)
+    const float baseMin = 0.01;
+    const float baseMax = 0.20;
 
+    // require more chroma for large rotations to avoid tinting neutrals at ±180°
+    float angAbs = abs(angleRad);
+    float dynamicMin = mix(baseMin, baseMin * 8.0, clamp(angAbs / PI, 0.0, 1.0));
+
+    // smooth weight from 0 (no rotation) to 1 (full rotation)
+    float rotWeight = smoothstep(dynamicMin, baseMax, chromaMag);
+    if (rotWeight <= 0.0) return color;
+
+    // apply partial rotation (preserves symmetry: +PI and -PI behave the same)
     float ang = angleRad * rotWeight;
-
-    // perform the YIQ chroma rotation (only rotates the I/Q components)
-    vec3 yiq = rgb2yiq * color;
     float cs = cos(ang);
     float sn = sin(ang);
     mat2 rot = mat2(cs, -sn, sn, cs);
+
+    vec3 yiq = yiq_orig;
     yiq.yz = rot * yiq.yz;
     vec3 rotated = yiq2rgb * yiq;
 
-    // Correct any small luminance drift by restoring original luminance.
-    // Compute rotated luminance and add a neutral offset so dot(final, LUMA) == origLum.
+    // restore original perceptual luminance exactly
     float rotatedLum = dot(rotated, LUMA);
-    rotated += vec3(origLum - rotatedLum);
+    vec3 rotatedCorrected = rotated + vec3(origLum - rotatedLum);
 
-    return clamp(rotated, 0.0, 1.0);
+    // blend back toward original to avoid asymmetric clamping/tinting artifacts
+    return clamp(mix(color, rotatedCorrected, rotWeight), 0.0, 1.0);
 }
 
 // Temperature tweak: subtle RGB shift toward warm/cool
@@ -130,7 +131,7 @@ void main() {
 
     // Hue: rotate chroma in YIQ-like space, preserving luminance and avoiding tinting near-neutral pixels
     float angle = radians(hue);
-    col = rotateHuePreserveLum(col, angle);
+    col = rotateHue(col, angle);
 
     // Gamma: final nonlinear stretch (affects midtones)
     col = pow(clamp(col, 0.0, 1.0), vec3(1.0 / g));
