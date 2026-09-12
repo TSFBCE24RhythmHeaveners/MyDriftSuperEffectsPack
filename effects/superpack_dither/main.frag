@@ -16,5 +16,5 @@ void main()
     float amount = DITHER_AMOUNT;
     color += DITHER_AMOUNT * GradientNoise(gl_FragCoord.xy);
 
-    FragColor = vec4(color, 1.0);
+    fragColor = vec4(color, 1.0);
 }
