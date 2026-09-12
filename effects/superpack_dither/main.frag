@@ -1,8 +1,7 @@
 #version 330 core
 
-in vec2 v_TexCoord;
-uniform sampler2D u_currentTexture;
-out vec4 FragColor;
+in vec2 v_texCoord; out vec4 fragColor;
+uniform sampler2D u_currentTexture; uniform vec2 u_resolution;
 uniform float amount;
 float GradientNoise(in vec2 fragCoord)
 {
@@ -11,7 +10,7 @@ float GradientNoise(in vec2 fragCoord)
 
 void main()
 {
-    vec3 color = texture(u_currentTexture, v_TexCoord).rgb;
+    vec3 color = texture(u_currentTexture, v_texCoord).rgb;
 
     const float DITHER_AMOUNT = 1.0 / 255.0;
     float amount = DITHER_AMOUNT;
