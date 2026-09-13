@@ -5,12 +5,34 @@
   "order": 37393000024,
   "parameters": [
     {
-      "identifier": "amount",
-      "displayName": "Amount",
+      "identifier": "strength",
+      "displayName": "Strength",
       "type": "float",
-      "minValue": 0.0,
-      "maxValue": 255.0,
-      "defaultValue": 128.0
+      "minValue": 0,
+      "maxValue": 1,
+      "defaultValue": 1
+    },
+    {
+      "identifier": "posterizeLevels",
+      "displayName": "Posterize Levels",
+      "type": "float",
+      "minValue": 2,
+      "maxValue": 16,
+      "defaultValue": 4
+    },
+    {
+      "identifier": "ditherEnabled",
+      "displayName": "Dither",
+      "type": "bool",
+      "defaultValue": false
+    },
+    {
+      "identifier": "ditherPixelSize",
+      "displayName": "Dither Pixel Size",
+      "type": "float",
+      "minValue": 1,
+      "maxValue": 16,
+      "defaultValue": 2
     }
   ],
   "backend": "gpu",
