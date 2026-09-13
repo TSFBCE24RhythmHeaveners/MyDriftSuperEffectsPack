@@ -1,0 +1,84 @@
+{
+  "id": "superpack_vhs",
+  "displayName": "SuperPack TV Simulator",
+  "category": "stylize",
+  "order": 37393000025,
+  "backend": "gpu",
+  "parameters": [
+    {
+      "identifier": "lineSync",
+      "displayName": "Line sync",
+      "type": "float",
+      "minValue": 0,
+      "maxValue": 20,
+      "defaultValue": 4
+    },
+    {
+      "identifier": "lineSyncSize",
+      "displayName": "Line sync size",
+      "type": "float",
+      "minValue": 0,
+      "maxValue": 10,
+      "defaultValue": 1
+    },
+    {
+      "identifier": "verticalSync",
+      "displayName": "Vertical sync",
+      "type": "float",
+      "minValue": -10,
+      "maxValue": 10,
+      "defaultValue": 0.5
+    },
+    {
+      "identifier": "scanlines",
+      "displayName": "Scanlines",
+      "type": "float",
+      "minValue": 0,
+      "maxValue": 1,
+      "defaultValue": 0.25
+    },
+    {
+      "identifier": "scanPhasing",
+      "displayName": "Scan phasing",
+      "type": "float",
+      "minValue": 0,
+      "maxValue": 1,
+      "defaultValue": 0.12
+    },
+    {
+      "identifier": "scanPhasingSize",
+      "displayName": "Scan phasing size",
+      "type": "float",
+      "minValue": 0,
+      "maxValue": 1,
+      "defaultValue": 0.5
+    },
+    {
+      "identifier": "noise",
+      "displayName": "Noise",
+      "type": "float",
+      "minValue": 0,
+      "maxValue": 1,
+      "defaultValue": 0.08
+    },
+    {
+      "identifier": "anaglyphSlide",
+      "displayName": "Anaglyph slide",
+      "type": "float",
+      "minValue": 0,
+      "maxValue": 1,
+      "defaultValue": 0.1
+    }
+  ],
+  "pipeline": {
+    "intermediateBuffers": [],
+    "passes": [
+      {
+        "passIndex": 0,
+        "fragmentShader": "main.frag",
+        "inputs": [{ "type": "source_texture" }],
+        "output": { "type": "canvas" }
+      }
+    ]
+  }
+}
