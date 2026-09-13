@@ -7,7 +7,7 @@ uniform vec2 u_resolution;
 uniform float u_strength;           // 0.0 to 1.0
 uniform float u_posterizeLevels;   // 2 to 16
 uniform float u_ditherEnabled;     // 0.0 (off) or 1.0 (on)
-uniform float u_ditherPixelSize;   // 2 to 16
+uniform float u_ditherPixelSize;   // 1 to 16
 
 in vec2 v_texCoord;
 out vec4 fragColor;
