@@ -24,7 +24,7 @@
       "identifier": "speed",
       "displayName": "Speed",
       "type": "float",
-      "minValue": 0,
+      "minValue": -62.82,
       "maxValue": 62.82,
       "defaultValue": 12.57
     },

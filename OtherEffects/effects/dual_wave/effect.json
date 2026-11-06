@@ -1,36 +1,36 @@
 {
-  "id": "forge_blank_effect_ttge",
-  "displayName": "Blank effect",
+  "id": "dual_wave",
+  "displayName": "Dual Wave",
   "category": "glitch",
-  "order": 1000,
-  "description": "Just the clip and an output. Build anything.",
+  "order": 1234500001,
+  "description": "Two waves at once.",
   "backend": "gpu",
   "parameters": [
     {
-      "identifier": "strength",
-      "displayName": "Strength",
-      "type": "float",
-      "minValue": 0,
-      "maxValue": 2,
-      "defaultValue": 0.2
-    },
-    {
-      "identifier": "waves",
-      "displayName": "Waves",
+      "identifier": "peaks",
+      "displayName": "Peaks",
       "type": "float",
       "minValue": 0.1,
       "maxValue": 20,
-      "defaultValue": 10
+      "defaultValue": 2.7
+    },
+    {
+      "identifier": "amount",
+      "displayName": "Amount",
+      "type": "float",
+      "minValue": 0,
+      "maxValue": 2,
+      "defaultValue": 1
     },
     {
       "identifier": "speed",
       "displayName": "Speed",
       "type": "float",
-      "minValue": 0,
+      "minValue": -62.82,
       "maxValue": 62.82,
       "defaultValue": 0
     },
-	{
+    {
       "identifier": "phase",
       "displayName": "Phase",
       "type": "float",

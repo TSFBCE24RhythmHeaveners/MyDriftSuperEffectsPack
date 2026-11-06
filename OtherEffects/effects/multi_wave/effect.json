@@ -1,0 +1,90 @@
+{
+  "id": "multi_wave",
+  "displayName": "Wave Master",
+  "category": "glitch",
+  "order": 1234500003,
+  "backend": "gpu",
+  "parameters": [
+    {
+      "identifier": "vpeaks",
+      "displayName": "Vertical Peaks",
+      "type": "float",
+      "minValue": 0.1,
+      "maxValue": 20,
+      "defaultValue": 0.1
+    },
+    {
+      "identifier": "vamount",
+      "displayName": "Vertical Amount",
+      "type": "float",
+      "minValue": 0,
+      "maxValue": 2,
+      "defaultValue": 0
+    },
+    {
+      "identifier": "vspeed",
+      "displayName": "Vertical Speed",
+      "type": "float",
+      "minValue": -62.82,
+      "maxValue": 62.82,
+      "defaultValue": 0
+    },
+    {
+      "identifier": "vphase",
+      "displayName": "Vertical Phase",
+      "type": "float",
+      "minValue": 0,
+      "maxValue": 62.82,
+      "defaultValue": 0
+    },
+    {
+      "identifier": "hpeaks",
+      "displayName": "Horizontal Peaks",
+      "type": "float",
+      "minValue": 0,
+      "maxValue": 60,
+      "defaultValue": 0.1
+    },
+    {
+      "identifier": "hamount",
+      "displayName": "Horizontal Amount",
+      "type": "float",
+      "minValue": 0,
+      "maxValue": 2,
+      "defaultValue": 0
+    },
+    {
+      "identifier": "hspeed",
+      "displayName": "Horizontal Speed",
+      "type": "float",
+      "minValue": -62.82,
+      "maxValue": 62.82,
+      "defaultValue": 0
+    },
+    {
+      "identifier": "hphase",
+      "displayName": "Horizontal Phase",
+      "type": "float",
+      "minValue": 0,
+      "maxValue": 62.82,
+      "defaultValue": 0
+    }
+  ],
+  "pipeline": {
+    "intermediateBuffers": [],
+    "passes": [
+      {
+        "passIndex": 0,
+        "fragmentShader": "main.frag",
+        "inputs": [
+          {
+            "type": "source_texture"
+          }
+        ],
+        "output": {
+          "type": "canvas"
+        }
+      }
+    ]
+  }
+}

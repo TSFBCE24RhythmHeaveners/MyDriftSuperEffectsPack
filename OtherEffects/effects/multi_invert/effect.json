@@ -1,0 +1,77 @@
+{
+  "id": "multi_invert",
+  "displayName": "Inversion Master",
+  "category": "color",
+  "order": 1234500002,
+  "backend": "gpu",
+  "parameters": [
+    {
+      "identifier": "redinvert",
+      "displayName": "Invert Red",
+      "type": "float",
+      "minValue": 0,
+      "maxValue": 1,
+      "defaultValue": 1
+    },
+    {
+      "identifier": "greeninvert",
+      "displayName": "Invert Green",
+      "type": "float",
+      "minValue": 0,
+      "maxValue": 1,
+      "defaultValue": 1
+    },
+    {
+      "identifier": "blueinvert",
+      "displayName": "Invert Blue",
+      "type": "float",
+      "minValue": 0,
+      "maxValue": 1,
+      "defaultValue": 1
+    },
+    {
+      "identifier": "hueinvert",
+      "displayName": "Invert Hue",
+      "type": "float",
+      "minValue": 0,
+      "maxValue": 1,
+      "defaultValue": 0
+    },
+    {
+      "identifier": "uvswap",
+      "displayName": "Swap UV",
+      "type": "float",
+      "minValue": 0,
+      "maxValue": 1,
+      "defaultValue": 0
+    },
+    {
+      "identifier": "hueshift",
+      "displayName": "Hue Shift",
+      "type": "float",
+      "minValue": 0,
+      "maxValue": 2,
+      "defaultValue": 0,
+      "ui": {
+        "step": 1
+      }
+    }
+  ],
+  "pipeline": {
+    "intermediateBuffers": [],
+    "passes": [
+      {
+        "passIndex": 0,
+        "fragmentShader": "main.frag",
+        "inputs": [
+          {
+            "type": "source_texture"
+          }
+        ],
+        "output": {
+          "type": "canvas"
+        }
+      }
+    ]
+  }
+}

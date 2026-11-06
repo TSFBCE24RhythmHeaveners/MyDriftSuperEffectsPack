@@ -1,57 +1,70 @@
 {
   "id": "superpack_vhs",
   "displayName": "SuperPack TV Simulator",
-  "category": "stylize",
+  "category": "glitch",
   "order": 37393000025,
   "backend": "gpu",
   "parameters": [
     {
-      "identifier": "lineSync",
+      "identifier": "lsync",
       "displayName": "Line sync",
       "type": "float",
       "minValue": 0,
-      "maxValue": 20,
-      "defaultValue": 4
+      "maxValue": 1,
+      "defaultValue": 0
     },
     {
-      "identifier": "lineSyncSize",
+      "identifier": "slices",
       "displayName": "Line sync size",
       "type": "float",
-      "minValue": 0,
-      "maxValue": 10,
-      "defaultValue": 1
+      "minValue": 2,
+      "maxValue": 120,
+      "defaultValue": 2
     },
     {
-      "identifier": "verticalSync",
+      "identifier": "changesPerSecond",
+      "displayName": "Line sync speed",
+      "type": "float",
+      "minValue": 0,
+      "maxValue": 60,
+      "defaultValue": 60
+    },
+    {
+      "identifier": "lsphase",
+      "displayName": "Line sync phase",
+      "type": "seed",
+      "defaultValue": 0,
+      "ui": {
+        "control": "seed"
+      }
+    },
+    {
+      "identifier": "tiltsync",
       "displayName": "Vertical sync",
       "type": "float",
-      "minValue": -10,
+      "minValue": 0,
       "maxValue": 10,
-      "defaultValue": 0.5
+      "defaultValue": 0
     },
     {
-      "identifier": "scanlines",
-      "displayName": "Scanlines",
+      "identifier": "split",
+      "displayName": "Colour split",
       "type": "float",
       "minValue": 0,
-      "maxValue": 1,
-      "defaultValue": 0.25
+      "maxValue": 40,
+      "defaultValue": 6
     },
     {
-      "identifier": "scanPhasing",
-      "displayName": "Scan phasing",
+      "identifier": "angle",
+      "displayName": "Split angle",
       "type": "float",
       "minValue": 0,
-      "maxValue": 1,
-      "defaultValue": 0.12
-    },
-    {
-      "identifier": "scanPhasingSize",
-      "displayName": "Scan phasing size",
-      "type": "float",
-      "minValue": 0,
-      "maxValue": 1,
-      "defaultValue": 0.5
+      "maxValue": 360,
+      "defaultValue": 0,
+      "ui": {
+        "control": "angle",
+        "unit": "°"
+      }
     },
     {
       "identifier": "noise",
@@ -59,15 +72,55 @@
       "type": "float",
       "minValue": 0,
       "maxValue": 1,
-      "defaultValue": 0.08
+      "defaultValue": 0
     },
     {
-      "identifier": "anaglyphSlide",
-      "displayName": "Anaglyph slide",
+      "identifier": "phosphorescence",
+      "displayName": "Phosphorescence",
       "type": "float",
       "minValue": 0,
       "maxValue": 1,
-      "defaultValue": 0.1
+      "defaultValue": 0.5
+    },
+    {
+      "identifier": "scanphasing",
+      "displayName": "Scan phasing size",
+      "type": "float",
+      "minValue": 0,
+      "maxValue": 1,
+      "defaultValue": 0.5
+    },
+    {
+      "identifier": "scanspeed",
+      "displayName": "Scan speed",
+      "type": "float",
+      "minValue": -10,
+      "maxValue": 10,
+      "defaultValue": -1
+    },
+    {
+      "identifier": "darkness",
+      "displayName": "Darkness",
+      "type": "float",
+      "minValue": 0,
+      "maxValue": 1,
+      "defaultValue": 0.5
+    },
+    {
+      "identifier": "lines",
+      "displayName": "Lines",
+      "type": "float",
+      "minValue": 10,
+      "maxValue": 1000,
+      "defaultValue": 100
+    },
+    {
+      "identifier": "rollSpeed",
+      "displayName": "Roll speed",
+      "type": "float",
+      "minValue": -5,
+      "maxValue": 5,
+      "defaultValue": 0
     }
   ],
   "pipeline": {

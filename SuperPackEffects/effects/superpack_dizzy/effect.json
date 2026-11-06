@@ -1,0 +1,50 @@
+{
+  "id": "superpack_dizzy",
+  "displayName": "SuperPack Vertigo",
+  "category": "glitch",
+  "order": 37393000026,
+  "backend": "gpu",
+  "parameters": [
+    {
+      "identifier": "amount",
+      "displayName": "Amount",
+      "type": "float",
+      "minValue": 0,
+      "maxValue": 0.9,
+      "defaultValue": 0.5
+    },
+    {
+      "identifier": "speed",
+      "displayName": "Speed",
+      "type": "float",
+      "minValue": 0,
+      "maxValue": 1,
+      "defaultValue": 0.15
+    },
+    {
+      "identifier": "zoom",
+      "displayName": "Zoom",
+      "type": "float",
+      "minValue": 0.5,
+      "maxValue": 6,
+      "defaultValue": 2
+    }
+  ],
+  "pipeline": {
+    "intermediateBuffers": [],
+    "passes": [
+      {
+        "passIndex": 0,
+        "fragmentShader": "main.frag",
+        "inputs": [
+          {
+            "type": "source_texture"
+          }
+        ],
+        "output": {
+          "type": "canvas"
+        }
+      }
+    ]
+  }
+}
