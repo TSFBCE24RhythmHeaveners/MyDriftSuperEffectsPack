@@ -28,7 +28,7 @@ vec4 n_nlphsoy_image(vec2 uv) {
 
 vec4 n_neomp47_image(vec2 uv) {
     vec4 col = n_nlphsoy_image(uv);
-    vec3 rgb = mix(vec3(luma(col)), col.rgb, 0.25);
+    vec3 rgb = mix(vec3(luma(col)), col.rgb, 0.125);
     return vec4(clamp(rgb, 0.0, 1.0), col.a);
 }
 
@@ -45,7 +45,7 @@ vec4 n_npqnliv_image(vec2 uv) {
 
 vec4 n_n00kzif_image(vec2 uv) {
     vec4 col = n_npqnliv_image(uv);
-    vec3 rgb = mix(vec3(luma(col)), col.rgb, 4.0);
+    vec3 rgb = mix(vec3(luma(col)), col.rgb, 8.0);
     return vec4(clamp(rgb, 0.0, 1.0), col.a);
 }
 

@@ -2,13 +2,13 @@
   "id": "ccs_hue",
   "displayName": "CCS Hue",
   "category": "color",
-  "order": 1000,
+  "order": 1234500000,
   "description": "VEGAS Pro's Color Corrector Secondary hue shifter.",
   "backend": "gpu",
   "parameters": [
     {
       "identifier": "value",
-      "displayName": "Value",
+      "displayName": "Hue",
       "type": "float",
       "minValue": -180,
       "maxValue": 180,
