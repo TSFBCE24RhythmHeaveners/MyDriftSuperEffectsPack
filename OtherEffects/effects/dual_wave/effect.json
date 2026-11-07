@@ -18,8 +18,8 @@
       "identifier": "amount",
       "displayName": "Amount",
       "type": "float",
-      "minValue": 0,
-      "maxValue": 2,
+      "minValue": -4,
+      "maxValue": 4,
       "defaultValue": 1
     },
     {
@@ -34,7 +34,7 @@
       "identifier": "phase",
       "displayName": "Phase",
       "type": "float",
-      "minValue": 0,
+      "minValue": -62.82,
       "maxValue": 62.82,
       "defaultValue": 0
     }
