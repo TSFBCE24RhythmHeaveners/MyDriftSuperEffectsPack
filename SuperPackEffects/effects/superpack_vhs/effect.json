@@ -42,7 +42,7 @@
       "identifier": "tiltsync",
       "displayName": "Vertical sync",
       "type": "float",
-      "minValue": 0,
+      "minValue": -10,
       "maxValue": 10,
       "defaultValue": 0
     },
