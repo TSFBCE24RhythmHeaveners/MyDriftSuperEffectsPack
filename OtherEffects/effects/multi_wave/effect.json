@@ -41,8 +41,8 @@
       "identifier": "hpeaks",
       "displayName": "Horizontal Peaks",
       "type": "float",
-      "minValue": 0,
-      "maxValue": 60,
+      "minValue": 0.1,
+      "maxValue": 20,
       "defaultValue": 0.1
     },
     {

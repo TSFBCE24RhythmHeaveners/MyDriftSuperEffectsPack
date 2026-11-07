@@ -50,7 +50,7 @@
       "displayName": "Hue Shift",
       "type": "float",
       "minValue": 0,
-      "maxValue": 2,
+      "maxValue": 3,
       "defaultValue": 0,
       "ui": {
         "step": 1

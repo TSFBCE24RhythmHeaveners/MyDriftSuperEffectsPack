@@ -36,6 +36,35 @@ vec4 n_n84jlai_image(vec2 uv) {
     return texture(u_currentTexture, uv);
 }
 
+vec4 n_na77taz_image(vec2 uv) {
+    vec4 col = n_n84jlai_image(uv);
+    vec3 rgb = mix(vec3(luma(col)), col.rgb, -1.0);
+    return vec4(clamp(rgb, 0.0, 1.0), col.a);
+}
+
+vec4 n_ndsdatc_image(vec2 uv) {
+    vec4 b = n_n84jlai_image(uv);
+    vec4 l = n_na77taz_image(uv);
+    vec3 rgb = l.rgb;
+    return vec4(mix(b.rgb, rgb, clamp(pv_hueinvert() * l.a, 0.0, 1.0)), b.a);
+}
+
+vec4 n_nqfe61r_image(vec2 uv) {
+    vec4 col = n_ndsdatc_image(uv);
+    vec3 rgb = vec3(
+        dot(col.rgb, vec3(0.0, 0.0, 1.0)),
+        dot(col.rgb, vec3(0.0, 1.0, 0.0)),
+        dot(col.rgb, vec3(1.0, 0.0, 0.0)));
+    return vec4(clamp(rgb, 0.0, 1.0), col.a);
+}
+
+vec4 n_nup2s6p_image(vec2 uv) {
+    vec4 b = n_ndsdatc_image(uv);
+    vec4 l = n_nqfe61r_image(uv);
+    vec3 rgb = l.rgb;
+    return vec4(mix(b.rgb, rgb, clamp(pv_uvswap() * l.a, 0.0, 1.0)), b.a);
+}
+
 float n_n7t3fru_value(vec2 uv) {
     return pv_hueshift();
 }
@@ -45,47 +74,10 @@ float n_nsfzz6f_value(vec2 uv) {
 }
 
 vec4 n_n0tgw71_image(vec2 uv) {
-    vec4 col = n_n84jlai_image(uv);
+    vec4 col = n_nup2s6p_image(uv);
     vec3 hsv = rgb2hsv(col.rgb);
     hsv.x = fract(hsv.x + n_nsfzz6f_value(uv) / 360.0);
     return vec4(hsv2rgb(hsv), col.a);
-}
-
-vec4 n_n9hxbwp_image(vec2 uv) {
-    return texture(u_currentTexture, uv);
-}
-
-vec4 n_na77taz_image(vec2 uv) {
-    vec4 col = n_n9hxbwp_image(uv);
-    vec3 rgb = mix(vec3(luma(col)), col.rgb, -1.0);
-    return vec4(clamp(rgb, 0.0, 1.0), col.a);
-}
-
-vec4 n_nup2s6p_image(vec2 uv) {
-    vec4 b = n_n0tgw71_image(uv);
-    vec4 l = n_na77taz_image(uv);
-    vec3 rgb = l.rgb;
-    return vec4(mix(b.rgb, rgb, clamp(pv_uvswap() * l.a, 0.0, 1.0)), b.a);
-}
-
-vec4 n_nue04kv_image(vec2 uv) {
-    return texture(u_currentTexture, uv);
-}
-
-vec4 n_nqfe61r_image(vec2 uv) {
-    vec4 col = n_nue04kv_image(uv);
-    vec3 rgb = vec3(
-        dot(col.rgb, vec3(0.0, 0.0, 1.0)),
-        dot(col.rgb, vec3(0.0, 1.0, 0.0)),
-        dot(col.rgb, vec3(1.0, 0.0, 0.0)));
-    return vec4(clamp(rgb, 0.0, 1.0), col.a);
-}
-
-vec4 n_ndsdatc_image(vec2 uv) {
-    vec4 b = n_nup2s6p_image(uv);
-    vec4 l = n_nqfe61r_image(uv);
-    vec3 rgb = l.rgb;
-    return vec4(mix(b.rgb, rgb, clamp(pv_hueinvert() * l.a, 0.0, 1.0)), b.a);
 }
 
 vec4 n_nx4bpg6_color(vec2 uv) {
@@ -93,7 +85,7 @@ vec4 n_nx4bpg6_color(vec2 uv) {
 }
 
 vec4 n_njcg9du_image(vec2 uv) {
-    vec4 b = n_ndsdatc_image(uv);
+    vec4 b = n_n0tgw71_image(uv);
     vec4 l = n_nx4bpg6_color(uv);
     vec3 rgb = abs(b.rgb - l.rgb);
     return vec4(mix(b.rgb, rgb, clamp(pv_redinvert() * l.a, 0.0, 1.0)), b.a);
