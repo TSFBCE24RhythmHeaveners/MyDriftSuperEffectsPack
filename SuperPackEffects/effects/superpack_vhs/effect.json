@@ -52,7 +52,7 @@
       "type": "float",
       "minValue": 0,
       "maxValue": 40,
-      "defaultValue": 6
+      "defaultValue": 0
     },
     {
       "identifier": "angle",
