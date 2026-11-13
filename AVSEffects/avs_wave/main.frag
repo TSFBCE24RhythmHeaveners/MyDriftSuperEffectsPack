@@ -23,8 +23,12 @@ float n_n3zncmh_value(vec2 uv) {
     return pv_phase();
 }
 
+float n_n75fey0_value(vec2 uv) {
+    return n_n3zncmh_value(uv) / (abs(10.0) < 1e-6 ? 1e-6 : 10.0);
+}
+
 float n_nkf8cwz_value(vec2 uv) {
-    return n_np7y0mz_value(uv) + n_n3zncmh_value(uv);
+    return n_np7y0mz_value(uv) + n_n75fey0_value(uv);
 }
 
 float n_nyolo4h_value(vec2 uv) {
