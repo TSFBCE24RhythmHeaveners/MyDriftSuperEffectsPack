@@ -1,0 +1,68 @@
+{
+  "id": "avs_colorize",
+  "displayName": "Colorize",
+  "category": "color",
+  "order": 4175400001,
+  "description": "A port of AVS4You Video Editor's colorize effect.",
+  "backend": "gpu",
+  "parameters": [
+    {
+      "identifier": "red",
+      "displayName": "Red",
+      "type": "float",
+      "minValue": 0,
+      "maxValue": 255,
+      "defaultValue": 255,
+      "ui": {
+        "step": 1
+      }
+    },
+    {
+      "identifier": "green",
+      "displayName": "Green",
+      "type": "float",
+      "minValue": 0,
+      "maxValue": 255,
+      "defaultValue": 0,
+      "ui": {
+        "step": 1
+      }
+    },
+    {
+      "identifier": "blue",
+      "displayName": "Blue",
+      "type": "float",
+      "minValue": 0,
+      "maxValue": 255,
+      "defaultValue": 0,
+      "ui": {
+        "step": 1
+      }
+    },
+    {
+      "identifier": "lvl",
+      "displayName": "Level",
+      "type": "float",
+      "minValue": 0,
+      "maxValue": 100,
+      "defaultValue": 100
+    }
+  ],
+  "pipeline": {
+    "intermediateBuffers": [],
+    "passes": [
+      {
+        "passIndex": 0,
+        "fragmentShader": "main.frag",
+        "inputs": [
+          {
+            "type": "source_texture"
+          }
+        ],
+        "output": {
+          "type": "canvas"
+        }
+      }
+    ]
+  }
+}

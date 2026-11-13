@@ -2,7 +2,7 @@
   "id": "avs_wave",
   "displayName": "Wave",
   "category": "glitch",
-  "order": 4175000000,
+  "order": 4175400000,
   "description": "A port of AVS4You Video Editor's wave effect.",
   "backend": "gpu",
   "parameters": [

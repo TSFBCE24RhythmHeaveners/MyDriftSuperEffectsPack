@@ -1,0 +1,38 @@
+{
+  "id": "km_robot",
+  "displayName": "Robot",
+  "category": "space",
+  "icon": "audio-waveform",
+  "order": 1234500000,
+  "backend": "juce",
+  "processor": "graph",
+  "prerollMs": 0,
+  "parameters": [
+    {
+      "identifier": "amount",
+      "displayName": "Amount",
+      "type": "float",
+      "minValue": 0,
+      "maxValue": 1,
+      "defaultValue": 1
+    }
+  ],
+  "graph": {
+    "version": 1,
+    "chain": [
+      {
+        "id": "p2brfo3",
+        "type": "classic.tremolo",
+        "knobs": {
+          "rate": 300,
+          "depth": {
+            "param": "amount"
+          }
+        }
+      }
+    ]
+  },
+  "nextFeatures": [
+    "audio:graph"
+  ]
+}
