@@ -1,0 +1,46 @@
+{
+  "id": "avs_twirl",
+  "displayName": "Twirl",
+  "category": "glitch",
+  "order": 4175400002,
+  "description": "A port of AVS4You Video Editor's twirl effect.",
+  "backend": "gpu",
+  "parameters": [
+    {
+      "identifier": "degree",
+      "displayName": "Degree",
+      "type": "float",
+      "minValue": 1,
+      "maxValue": 10,
+      "defaultValue": 2
+    },
+    {
+      "identifier": "angle",
+      "displayName": "Angle",
+      "type": "float",
+      "minValue": -360,
+      "maxValue": 360,
+      "defaultValue": 90,
+      "ui": {
+        "control": "angle"
+      }
+    }
+  ],
+  "pipeline": {
+    "intermediateBuffers": [],
+    "passes": [
+      {
+        "passIndex": 0,
+        "fragmentShader": "main.frag",
+        "inputs": [
+          {
+            "type": "source_texture"
+          }
+        ],
+        "output": {
+          "type": "canvas"
+        }
+      }
+    ]
+  }
+}

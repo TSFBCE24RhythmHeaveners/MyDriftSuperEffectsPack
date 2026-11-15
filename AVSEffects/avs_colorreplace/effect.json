@@ -1,0 +1,39 @@
+{
+  "id": "avs_colorreplace",
+  "displayName": "Color Replace",
+  "category": "color",
+  "order": 4175400003,
+  "description": "A port of AVS4You Video Editor's color exchange effect.",
+  "backend": "gpu",
+  "parameters": [
+    {
+      "identifier": "targetcolor",
+      "displayName": "Target Color",
+      "type": "color",
+      "defaultValue": "#ffeb00"
+    },
+    {
+      "identifier": "replacementcolor",
+      "displayName": "Replacement Color",
+      "type": "color",
+      "defaultValue": "#ff0000"
+    }
+  ],
+  "pipeline": {
+    "intermediateBuffers": [],
+    "passes": [
+      {
+        "passIndex": 0,
+        "fragmentShader": "main.frag",
+        "inputs": [
+          {
+            "type": "source_texture"
+          }
+        ],
+        "output": {
+          "type": "canvas"
+        }
+      }
+    ]
+  }
+}
